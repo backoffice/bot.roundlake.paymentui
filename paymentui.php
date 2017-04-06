@@ -42,6 +42,7 @@ function paymentui_civicrm_process_partial_payments($paymentParams, $participant
       }
       //Making sure that payment params has the correct amount for partial payment
       $paymentParams['total_amount'] = $pInfo['partial_payment_pay'];
+      $paymentParams['payment_instrument_id'] = 1;
 
       //Add additional financial transactions for each partial payment
       $trxnRecord = CRM_Contribute_BAO_Contribution::recordAdditionalPayment($pInfo['contribution_id'], $paymentParams, 'owed', $pId);

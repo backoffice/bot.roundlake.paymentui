@@ -30,9 +30,9 @@ class CRM_Paymentui_Form_Paymentui extends CRM_Core_Form {
     // $this->assign('hidePayPalExpress', TRUE);
     //Set Payment processor to CC
 
-    $this->payment_processor_id = CRM_Financial_BAO_PaymentProcessor::getDefault();
-    CRM_Core_Payment_Form::buildPaymentForm($this, $processors[1], 1, FALSE);
-    $this->_paymentProcessor = CRM_Financial_BAO_PaymentProcessor::getPayment($this->payment_processor_id->id, 'live');
+    $defaultProcessor = CRM_Financial_BAO_PaymentProcessor::getDefault();
+    CRM_Core_Payment_Form::buildPaymentForm($this, $processors[$defaultProcessor->id], 1, FALSE);
+    $this->_paymentProcessor = CRM_Financial_BAO_PaymentProcessor::getPayment($defaultProcessor->id, 'live');
   }
 
   /**
@@ -62,8 +62,10 @@ class CRM_Paymentui_Form_Paymentui extends CRM_Core_Form {
     //Get event names for which logged in user and the related contacts are registered
     $this->_participantInfo = CRM_Paymentui_BAO_Paymentui::getParticipantInfo($this->_contactId);
     $this->assign('participantInfo', $this->_participantInfo);
-    foreach ($this->_participantInfo as $pid => $pInfo) {
-      $element =& $this->add('text', "payment[$pid]", NULL, array('onblur' => 'calculateTotal();'), FALSE);
+    if (!empty($this->_participantInfo)) {
+      foreach ($this->_participantInfo as $pid => $pInfo) {
+        $element =& $this->add('text', "payment[$pid]", NULL, array('onblur' => 'calculateTotal();'), FALSE);
+      }
     }
     // CRM_Contribute_Form_ContributionBase::assignToTemplate();
     // CRM_Core_Payment_Form::buildCreditCard($this);

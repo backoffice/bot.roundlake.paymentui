@@ -22,14 +22,7 @@ class CRM_Paymentui_Form_Paymentui extends CRM_Core_Form {
     $this->set('bltID', $this->_bltID);
     $this->assign('bltID', $this->_bltID);
     $this->_fields = array();
-    // CRM_Core_Payment_Form::setCreditCardFields($this);
     $processors = CRM_Financial_BAO_PaymentProcessor::getPaymentProcessors($capabilities = array('LiveMode'), $ids = FALSE);
-    // print_r($processors);
-    // die();
-    // $this->assign_by_ref('paymentProcessor', $paymentProcessor);
-    // $this->assign('hidePayPalExpress', TRUE);
-    //Set Payment processor to CC
-
     $defaultProcessor = CRM_Financial_BAO_PaymentProcessor::getDefault();
     CRM_Core_Payment_Form::buildPaymentForm($this, $processors[$defaultProcessor->id], 1, FALSE);
     $this->_paymentProcessor = CRM_Financial_BAO_PaymentProcessor::getPayment($defaultProcessor->id, 'live');
@@ -67,9 +60,6 @@ class CRM_Paymentui_Form_Paymentui extends CRM_Core_Form {
         $element =& $this->add('text', "payment[$pid]", NULL, array('onblur' => 'calculateTotal();'), FALSE);
       }
     }
-    // CRM_Contribute_Form_ContributionBase::assignToTemplate();
-    // CRM_Core_Payment_Form::buildCreditCard($this);
-
     $this->addButtons(array(
     array(
       'type' => 'submit',

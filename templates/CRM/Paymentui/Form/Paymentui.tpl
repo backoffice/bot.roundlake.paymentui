@@ -91,5 +91,6 @@ function calculateTotal() {
 	
 	document.getElementById('total').innerHTML = total;		
 }
+calculateTotal();
 </script>
 {/literal}

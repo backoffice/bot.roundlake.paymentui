@@ -13,3 +13,8 @@ Differences between this extension and Backoffice Originals:
 
 
 Note to create a partially paid event registration: Register user on the backend and edit the amount under payment Information to be less than the Total Fees
+
+Added Features:
+
++ Token: 'Table of Partial Payment Information' that generates the table the user sees when on the payment page as a token to be used in emails.S
++ Custom Field for late fee schedule "Event Late Fees"

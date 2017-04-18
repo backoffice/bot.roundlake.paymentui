@@ -2,6 +2,83 @@
 
 require_once 'paymentui.civix.php';
 
+
+/**
+ * Implementation of hook_civicrm_tokens
+ *
+ * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_tokens
+ */
+function paymentui_civicrm_tokens(&$tokens) {
+  $tokens['partialPayment'] = array(
+    'partialPayment.table' => 'Table of Partial Payment Information',
+  );
+}
+
+/**
+ * Implementation of hook_civicrm_tokenValues
+ *
+ * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_tokenValues
+ */
+function paymentui_civicrm_tokenValues(&$values, $cids, $job = NULL, $tokens = array(), $context = NULL) {
+  if (!empty($tokens['partialPayment'])) {
+    foreach ($cids as $contactID) {
+      $table = '
+         <table class="partialPayment">
+           <thead><tr>
+             <th>Event Name</th>
+             <th>Contact Name</th>
+             <th>Total Amount</th>
+             <th>Paid</th>
+             <th>Balance</th>
+           </tr></thead>
+           <tbody>';
+      $participantInfo = CRM_Paymentui_BAO_Paymentui::getParticipantInfo($contactID);
+      foreach ($participantInfo as $row) {
+        $table .= "
+         <tr class=" . $row['rowClass'] . ">
+           <td>" . $row['event_name'] . "</td>
+           <td>" . $row['contact_name'] . "</td>
+           <td>" . $row['total_amount'] . "</td>
+           <td>" . $row['paid'] . "</td>
+           <td>" . $row['balance'] . "</td>
+         </tr>
+       ";
+      }
+      $table .= "</tbody></table>";
+      $partialPaymentTokens = array(
+        'partialPayment.table' => $table,
+      );
+      $values[$contactID] = empty($values[$contactID]) ? $partialPaymentTokens : $values[$contactID] + $partialPaymentTokens;
+    }
+  }
+}
+
+/**
+ * Implementation of hook_civicrm_custom
+ *
+ * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_custom
+ */
+// function paymentui_civicrm_custom($op, $groupID, $entityID, &$params) {
+//   // on back end we will send receipt with token when this field is populated for custom field
+//   // TODO create message template with ID
+//   // TODO create custom field
+//   $mailParams = array(
+//     'messageTemplateID' => $msgTemplate['id'],
+//     // contact id if contact tokens are to be replaced
+//     'contactId' => $objectRef->contact_id,
+//     // the From: header
+//     'from' => 'alice+from@aghstrategies.com',
+//     // the recipient’s email - mail is sent only if set
+//     'toEmail' => $newMem['email'],
+//     // the Cc: header
+//     'cc' => 'alice+cc@aghstrategies.com',
+//     // whether this is a test email (and hence should include the test banner)
+//     'isTest' => FALSE,
+//   );
+//   //https://github.com/civicrm/civicrm-core/blob/fa33a2c369572781bd7bb56479e0d194f77d8efc/CRM/Core/BAO/MessageTemplate.php#L310
+//   $sent = CRM_Core_BAO_MessageTemplate::sendTemplate($mailParams);
+// }
+
 /**
  * Function to process partial payments
  * @param $paymentParams - Payment Processor parameters

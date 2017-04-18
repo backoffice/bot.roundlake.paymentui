@@ -35,6 +35,7 @@ class CRM_Paymentui_Form_Paymentui extends CRM_Core_Form {
    * @access public
    */
   public function buildQuickForm() {
+    CRM_Core_Resources::singleton()->addScriptFile('bot.roundlake.paymentui', 'js/paymentui.js');
     //Get contact name of the logged in user
     $session     = CRM_Core_Session::singleton();
     $this->_contactId   = $session->get('userID');
@@ -59,7 +60,7 @@ class CRM_Paymentui_Form_Paymentui extends CRM_Core_Form {
     if (!empty($this->_participantInfo)) {
       foreach ($this->_participantInfo as $pid => $pInfo) {
         $latefees = $latefees + $pInfo['latefees'];
-        $element =& $this->add('text', "payment[$pid]", NULL, array('onblur' => 'calculateTotal();'), FALSE);
+        $element =& $this->add('text', "payment[$pid]", NULL, array(), FALSE);
       }
     }
     if ($latefees) {

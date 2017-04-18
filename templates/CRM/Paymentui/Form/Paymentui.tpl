@@ -85,22 +85,3 @@
 <div class="crm-submit-buttons">
 {include file="CRM/common/formButtons.tpl" location="bottom"}
 </div>
-{literal}
-
-<script type="text/javascript">
-function calculateTotal() {
-	var total = 0.00;
-	cj.each(cj( "input[name^='payment']" ), function() {
-		var amt = cj(this).val();
-		if ( cj.isNumeric(amt) ) {
-			total = parseFloat(total)+parseFloat(amt);
-		}
-	});
-	total = Math.round(total*100, 2)/100;
-    total.toFixed(2);
-
-	document.getElementById('total').innerHTML = total;
-}
-calculateTotal();
-</script>
-{/literal}

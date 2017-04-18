@@ -55,10 +55,15 @@ class CRM_Paymentui_Form_Paymentui extends CRM_Core_Form {
     //Get event names for which logged in user and the related contacts are registered
     $this->_participantInfo = CRM_Paymentui_BAO_Paymentui::getParticipantInfo($this->_contactId);
     $this->assign('participantInfo', $this->_participantInfo);
+    $latefees = 0;
     if (!empty($this->_participantInfo)) {
       foreach ($this->_participantInfo as $pid => $pInfo) {
+        $latefees = $latefees + $pInfo['latefees'];
         $element =& $this->add('text', "payment[$pid]", NULL, array('onblur' => 'calculateTotal();'), FALSE);
       }
+    }
+    if ($latefees) {
+      $this->assign('latefees', $latefees);
     }
     $this->addButtons(array(
     array(

@@ -36,7 +36,7 @@ class CRM_Paymentui_BAO_Paymentui extends CRM_Event_DAO_Participant {
         $participantInfo[$dao->id]['total_amount']    = $paymentDetails['total'];
         $participantInfo[$dao->id]['paid']            = $paymentDetails['paid'];
         $participantInfo[$dao->id]['balance']         = $paymentDetails['balance'];
-        $participantInfo[$dao->id]['latefees']        = self::getLateFees($dao->event_id);
+        $participantInfo[$dao->id]['latefees']        = self::getLateFees($dao->event_id, $paymentDetails['paid']);
         $participantInfo[$dao->id]['rowClass']        = 'row_' . $dao->id;
         $participantInfo[$dao->id]['payLater']        = $paymentDetails['payLater'];
       }
@@ -51,14 +51,13 @@ class CRM_Paymentui_BAO_Paymentui extends CRM_Event_DAO_Participant {
    * [getLateFees description]
    * @param  [type] $eventId [description]
    */
-  public static function getLateFees($eventId) {
+  public static function getLateFees($eventId, $amountPaid) {
     try {
-      $lateFeeSchedule = civicrm_api3('CustomField', 'get', array(
+      $lateFeeSchedule = civicrm_api3('CustomField', 'getSingle', array(
         'sequential' => 1,
         'return' => array("id"),
         'name' => "event_late_fees",
         'api.Event.getsingle' => array(
-          'return' => "custom_243",
           'id' => $eventId,
         ),
       ));
@@ -69,13 +68,29 @@ class CRM_Paymentui_BAO_Paymentui extends CRM_Event_DAO_Participant {
         'domain' => 'bot.roundlake.paymentui',
       )));
     }
-    print_r($lateFeeSchedule);
-    die();
-    //TODO parse schedule
-    if (!empty($lateFeeSchedule['result'])) {
-
+    $scheduleToParse = $lateFeeSchedule['api.Event.getsingle']["custom_{$lateFeeSchedule['id']}"];
+    //parse schedule expects string that looks like: "04/15/2017:100\r\n04/20/2017:100\r\n04/25/2017:100"
+    $totalAmountDue = 0;
+    if (!empty($scheduleToParse)) {
+      $arrayOfDates = explode("\r\n", $scheduleToParse);
+      foreach ($arrayOfDates as $key => $dates) {
+        list($dueDate, $amountDue) = explode(":", $dates);
+        $dueDate = DateTime::createFromFormat('m/d/Y', $dueDate);
+        $dueDate = date_timestamp_get($dueDate);
+        $currentDate = time();
+        if ($dueDate < $currentDate) {
+          $totalAmountDue = $totalAmountDue + $amountDue;
+        }
+      }
+    }
+    if (!empty($totalAmountDue) && $totalAmountDue > $amountPaid) {
+      return 1;
+    }
+    else {
+      return FALSE;
     }
   }
+
   /**
    * Helper function to get formatted display names of the the participants
    * Purpose - to generate comma separated display names of primary and additional participants

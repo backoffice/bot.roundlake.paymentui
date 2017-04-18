@@ -102,6 +102,42 @@ function paymentui_civicrm_process_partial_payments($paymentParams, $participant
         $participantInfo[$pId]['success'] = 1;
       }
     }
+    if (!empty($pInfo['latefees'])) {
+      try {
+        $lateFeeContrib = civicrm_api3('Contribution', 'create', array(
+          'financial_type_id' => "Event Fee",
+          'total_amount' => $pInfo['latefees'],
+          'contact_id' => $pInfo['cid'],
+          'contribution_status_id' => "Completed",
+          'payment_instrument_id' => "Credit Card",
+          'source' => "partial payment form late fee",
+        ));
+      }
+      catch (CiviCRM_API3_Exception $e) {
+        $error = $e->getMessage();
+        CRM_Core_Error::debug_log_message(ts('API Error %1', array(
+          'domain' => 'bot.roundlake.paymentui',
+        )));
+      }
+    }
+    if (!empty($pInfo['partial_payment_pay'])) {
+      try {
+        $lateFeeContrib = civicrm_api3('Contribution', 'create', array(
+          'financial_type_id' => "Event Fee",
+          'total_amount' => round($pInfo['partial_payment_pay'] * .02, 2),
+          'contact_id' => $pInfo['cid'],
+          'contribution_status_id' => "Completed",
+          'payment_instrument_id' => "Credit Card",
+          'source' => "partial payment form credit card fee",
+        ));
+      }
+      catch (CiviCRM_API3_Exception $e) {
+        $error = $e->getMessage();
+        CRM_Core_Error::debug_log_message(ts('API Error %1', array(
+          'domain' => 'bot.roundlake.paymentui',
+        )));
+      }
+    }
   }
   return $participantInfo;
 }

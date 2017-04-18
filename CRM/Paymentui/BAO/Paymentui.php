@@ -12,7 +12,7 @@ class CRM_Paymentui_BAO_Paymentui extends CRM_Event_DAO_Participant {
     $relContactIDs       = implode(',', $relatedContactIDs);
 
     //Get participant info for the primary and related contacts
-    $sql = "SELECT p.id, p.contact_id, e.title, c.display_name, pp.contribution_id FROM civicrm_participant p
+    $sql = "SELECT p.id, p.contact_id, e.title, c.display_name, p.event_id, pp.contribution_id FROM civicrm_participant p
       INNER JOIN civicrm_contact c ON ( p.contact_id =  c.id )
 			INNER JOIN civicrm_event e ON ( p.event_id = e.id )
 			INNER JOIN civicrm_participant_payment pp ON ( p.id = pp.participant_id )
@@ -36,6 +36,7 @@ class CRM_Paymentui_BAO_Paymentui extends CRM_Event_DAO_Participant {
         $participantInfo[$dao->id]['total_amount']    = $paymentDetails['total'];
         $participantInfo[$dao->id]['paid']            = $paymentDetails['paid'];
         $participantInfo[$dao->id]['balance']         = $paymentDetails['balance'];
+        $participantInfo[$dao->id]['latefees']        = self::getLateFees($dao->event_id);
         $participantInfo[$dao->id]['rowClass']        = 'row_' . $dao->id;
         $participantInfo[$dao->id]['payLater']        = $paymentDetails['payLater'];
       }
@@ -46,6 +47,35 @@ class CRM_Paymentui_BAO_Paymentui extends CRM_Event_DAO_Participant {
     return $participantInfo;
   }
 
+  /**
+   * [getLateFees description]
+   * @param  [type] $eventId [description]
+   */
+  public static function getLateFees($eventId) {
+    try {
+      $lateFeeSchedule = civicrm_api3('CustomField', 'get', array(
+        'sequential' => 1,
+        'return' => array("id"),
+        'name' => "event_late_fees",
+        'api.Event.getsingle' => array(
+          'return' => "custom_243",
+          'id' => $eventId,
+        ),
+      ));
+    }
+    catch (CiviCRM_API3_Exception $e) {
+      $error = $e->getMessage();
+      CRM_Core_Error::debug_log_message(ts('API Error %1', array(
+        'domain' => 'bot.roundlake.paymentui',
+      )));
+    }
+    print_r($lateFeeSchedule);
+    die();
+    //TODO parse schedule
+    if (!empty($lateFeeSchedule['result'])) {
+
+    }
+  }
   /**
    * Helper function to get formatted display names of the the participants
    * Purpose - to generate comma separated display names of primary and additional participants
@@ -79,7 +109,7 @@ class CRM_Paymentui_BAO_Paymentui extends CRM_Event_DAO_Participant {
     catch (CiviCRM_API3_Exception $e) {
       $error = $e->getMessage();
       CRM_Core_Error::debug_log_message(ts('API Error %1', array(
-        'domain' => 'com.aghstrategies.partialeventpayments',
+        'domain' => 'bot.roundlake.paymentui',
         1 => $error,
       )));
     }

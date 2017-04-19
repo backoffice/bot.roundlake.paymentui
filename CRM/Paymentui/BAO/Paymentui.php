@@ -52,6 +52,7 @@ class CRM_Paymentui_BAO_Paymentui extends CRM_Event_DAO_Participant {
    * @param  [type] $eventId [description]
    */
   public static function getLateFees($eventId, $amountPaid) {
+    $lateFee = 0;
     try {
       $lateFeeSchedule = civicrm_api3('CustomField', 'getSingle', array(
         'sequential' => 1,
@@ -81,14 +82,12 @@ class CRM_Paymentui_BAO_Paymentui extends CRM_Event_DAO_Participant {
         if ($dueDate < $currentDate) {
           $totalAmountDue = $totalAmountDue + $amountDue;
         }
+        if (!empty($totalAmountDue) && $totalAmountDue > $amountPaid) {
+          $lateFee = $lateFee + 10;
+        }
       }
     }
-    if (!empty($totalAmountDue) && $totalAmountDue > $amountPaid) {
-      return 1;
-    }
-    else {
-      return FALSE;
-    }
+    return $lateFee;
   }
 
   /**

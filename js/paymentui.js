@@ -14,7 +14,8 @@ CRM.$(function ($) {
       }
     });
 
-    var creditcardfees = (total * 2 / 100).toFixed(2);
+    //Processing fee is 4%
+    var creditcardfees = (total * 4 / 100).toFixed(2);
     var latefees = 0;
     if (parseFloat($('#latefees').html()) > 0) {
       latefees = parseFloat($('#latefees').html());

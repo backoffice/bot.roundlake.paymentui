@@ -25,7 +25,7 @@
 						{/foreach}
 						{if $contactId}
 						<tr class="sticky">
-							<td colspan = 5 scope="col"><strong>2% Credit Card Fee</strong></th>
+							<td colspan = 5 scope="col"><strong>Processing Fee</strong></th>
 							<td class="font-size12pt "><span>$ </span><span name='creditCardFees' id ='creditCardFees'>0</span></td>
 						</tr>
 						{if $latefees}

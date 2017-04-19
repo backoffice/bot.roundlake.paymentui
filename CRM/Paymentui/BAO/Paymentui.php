@@ -69,11 +69,13 @@ class CRM_Paymentui_BAO_Paymentui extends CRM_Event_DAO_Participant {
         'domain' => 'bot.roundlake.paymentui',
       )));
     }
-    $scheduleToParse = $lateFeeSchedule['api.Event.getsingle']["custom_{$lateFeeSchedule['id']}"];
-    //parse schedule expects string that looks like: "04/15/2017:100\r\n04/20/2017:100\r\n04/25/2017:100"
-    $totalAmountDue = 0;
-    if (!empty($scheduleToParse)) {
+
+    if (!empty($lateFeeSchedule['api.Event.getsingle']["custom_{$lateFeeSchedule['id']}"])) {
+      //parse schedule expects string that looks like: "04/15/2017:100\r\n04/20/2017:100\r\n04/25/2017:100"
+      $scheduleToParse = $lateFeeSchedule['api.Event.getsingle']["custom_{$lateFeeSchedule['id']}"];
       $arrayOfDates = explode("\r\n", $scheduleToParse);
+      $totalAmountDue = 0;
+      $lateFee = 0;
       foreach ($arrayOfDates as $key => $dates) {
         list($dueDate, $amountDue) = explode(":", $dates);
         $dueDate = DateTime::createFromFormat('m/d/Y', $dueDate);
@@ -81,9 +83,9 @@ class CRM_Paymentui_BAO_Paymentui extends CRM_Event_DAO_Participant {
         $currentDate = time();
         if ($dueDate < $currentDate) {
           $totalAmountDue = $totalAmountDue + $amountDue;
-        }
-        if (!empty($totalAmountDue) && $totalAmountDue > $amountPaid) {
-          $lateFee = $lateFee + 10;
+          if ($totalAmountDue > $amountPaid) {
+            $lateFee = $lateFee + 10;
+          }
         }
       }
     }

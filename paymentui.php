@@ -2,7 +2,6 @@
 
 require_once 'paymentui.civix.php';
 
-
 /**
  * Implementation of hook_civicrm_tokens
  *

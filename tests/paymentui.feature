@@ -30,3 +30,11 @@ And a contribution will be made on the backend on the childs record
 | 04/21/17   | 10      | 20      |
 | 04/21/17   | 102     | 10      |
 | 04/21/17   | 200     | 0       |
+
+Scenario: Applying Processing Fee
+
+When a logged in contact makes a payment of <dollars> on the roundlake/add/payment page
+Then a 4% processing fee is added to the payment
+And this amount is displayed as a line item "Processing Fee" on the page
+And a contribution record is made for the logged in contact for the amount <dollars>
+And if they are late fees the late fees are not included in the <dollars> only the payments towards partially paid event registrations are included in <dollars>

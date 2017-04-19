@@ -6,7 +6,7 @@ CRM.$(function ($) {
   });
 
   var calculateTotal = function () {
-    var total = 0.00;
+    var total = 0;
     $.each($("input[name^='payment']"), function () {
       var amt = $(this).val();
       if ($.isNumeric(amt)) {
@@ -18,13 +18,11 @@ CRM.$(function ($) {
     var creditcardfees = (total * 4 / 100).toFixed(2);
     var latefees = 0;
     if (parseFloat($('#latefees').html()) > 0) {
-      latefees = parseFloat($('#latefees').html());
+      latefees = $('#latefees').html();
     }
 
     document.getElementById('creditCardFees').innerHTML = creditcardfees;
-    total = Math.round(total * 100, 2) / 100;
-    total = parseFloat(total) + parseFloat(creditcardfees) + latefees;
-    total.toFixed(2);
+    total = (parseFloat(total) + parseFloat(creditcardfees) + parseFloat(latefees)).toFixed(2);
     document.getElementById('total').innerHTML = total;
   };
 

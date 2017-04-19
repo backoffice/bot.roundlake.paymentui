@@ -60,6 +60,7 @@ function paymentui_civicrm_tokenValues(&$values, $cids, $job = NULL, $tokens = a
  */
 function paymentui_civicrm_process_partial_payments($paymentParams, $participantInfo) {
   //Iterate through participant info
+  $processingFeeForPayment = 0;
   foreach ($participantInfo as $pId => $pInfo) {
     if (!$pInfo['contribution_id'] || !$pId) {
       $participantInfo[$pId]['success'] = 0;
@@ -120,23 +121,26 @@ function paymentui_civicrm_process_partial_payments($paymentParams, $participant
       }
     }
     if (!empty($pInfo['partial_payment_pay'])) {
-      try {
-        $lateFeeContrib = civicrm_api3('Contribution', 'create', array(
-          'financial_type_id' => "Event Fee",
-          'total_amount' => round($pInfo['partial_payment_pay'] * .02, 2),
-          'contact_id' => $pInfo['cid'],
-          'contribution_status_id' => "Completed",
-          'payment_instrument_id' => "Credit Card",
-          'source' => "partial payment form credit card fee",
-        ));
-      }
-      catch (CiviCRM_API3_Exception $e) {
-        $error = $e->getMessage();
-        CRM_Core_Error::debug_log_message(ts('API Error %1', array(
-          'domain' => 'bot.roundlake.paymentui',
-        )));
-      }
+      // Processing Fee 4%
+      $processingFeeForPayment = $processingFeeForPayment + round($pInfo['partial_payment_pay'] * .04, 2);
     }
+  }
+  $loggedInUser = CRM_Core_Session::singleton()->getLoggedInContactID();
+  try {
+    $lateFeeContrib = civicrm_api3('Contribution', 'create', array(
+      'financial_type_id' => "Event Fee",
+      'total_amount' => $processingFeeForPayment,
+      'contact_id' => $loggedInUser,
+      'contribution_status_id' => "Completed",
+      'payment_instrument_id' => "Credit Card",
+      'source' => "partial payment form credit card fee",
+    ));
+  }
+  catch (CiviCRM_API3_Exception $e) {
+    $error = $e->getMessage();
+    CRM_Core_Error::debug_log_message(ts('API Error %1', array(
+      'domain' => 'bot.roundlake.paymentui',
+    )));
   }
   return $participantInfo;
 }

@@ -28,14 +28,14 @@ And a contribution will be made on the backend on the childs record
 | today      | dollars | lateFee |
 | 04/16/2017 | 100     | 0       |
 | 04/16/2017 | 10      | 10      |
-| 04/21/17   | 10      | 20      |
-| 04/21/17   | 102     | 10      |
-| 04/21/17   | 200     | 0       |
+| 04/21/2017 | 10      | 20      |
+| 04/21/2017 | 102     | 10      |
+| 04/21/2017 | 200     | 0       |
 
 Scenario: Applying Processing Fee
 
 When a logged in contact makes a payment of <dollars> on the roundlake/add/payment page
-And the procesing fee as set on the civicrm/paymentui/feessettings page is <processingFee> 
+And the procesing fee as set on the civicrm/paymentui/feessettings page is <processingFee>
 Then a <processingFee>% processing fee is added to the payment
 And this amount is displayed as a line item "Processing Fee" on the page
 And a contribution record is made for the logged in contact for the amount <dollars>

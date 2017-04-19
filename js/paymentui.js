@@ -1,4 +1,10 @@
 CRM.$(function ($) {
+  $.each($('table.partialPaymentInfo tr'), function () {
+    if ($('td.balance', this).text() == '$ 0.00') {
+      $('td.payment', this).css('visibility', 'hidden');
+    }
+  });
+
   var calculateTotal = function () {
     var total = 0.00;
     $.each($("input[name^='payment']"), function () {

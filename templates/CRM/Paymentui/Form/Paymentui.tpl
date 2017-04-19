@@ -5,7 +5,7 @@
 		<table class=" form-layout">
 			<tr>
 				<td colspan="2">
-					<table class="form-layout">
+					<table class="form-layout partialPaymentInfo">
 						<thead class="sticky">
 							{foreach from=$columnHeaders item=header}
 								<th scope="col"><strong>{$header}</strong></th>
@@ -17,9 +17,9 @@
 								<td class="">{$row.contact_name}</td>
 								<td class="">{$row.total_amount|crmMoney}</td>
 								<td class="">{$row.paid|crmMoney}</td>
-								<td class="">{$row.balance|crmMoney}</td>
+								<td class="balance">{$row.balance|crmMoney}</td>
 
-								<td class="">{$form.payment[$row.pid].html|crmMoney}</td>
+								<td class="payment">{$form.payment[$row.pid].html|crmMoney}</td>
 
 							</tr>
 						{/foreach}

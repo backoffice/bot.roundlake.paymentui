@@ -122,7 +122,12 @@ function paymentui_civicrm_process_partial_payments($paymentParams, $participant
     }
     if (!empty($pInfo['partial_payment_pay'])) {
       // Processing Fee 4%
-      $processingFeeForPayment = $processingFeeForPayment + round($pInfo['partial_payment_pay'] * .04, 2);
+      $processingFee = 1;
+      $fees = CRM_Paymentui_BAO_Paymentui::getFeesFromSettings();
+      if (!empty($fees['processing_fee'])) {
+        $processingFee = $fees['processing_fee'] / 100;
+      }
+      $processingFeeForPayment = $processingFeeForPayment + round($pInfo['partial_payment_pay'] * $processingFee, 2);
     }
   }
   $loggedInUser = CRM_Core_Session::singleton()->getLoggedInContactID();

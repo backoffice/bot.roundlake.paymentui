@@ -36,6 +36,12 @@ class CRM_Paymentui_Form_Paymentui extends CRM_Core_Form {
    */
   public function buildQuickForm() {
     CRM_Core_Resources::singleton()->addScriptFile('bot.roundlake.paymentui', 'js/paymentui.js');
+    $processingFee = 0;
+    $fees = CRM_Paymentui_BAO_Paymentui::getFeesFromSettings();
+    if (!empty($fees['processing_fee'])) {
+      $processingFee = $fees['processing_fee'];
+    }
+    CRM_Core_Resources::singleton()->addVars('paymentui', array('processingFee' => $processingFee));
     //Get contact name of the logged in user
     $session     = CRM_Core_Session::singleton();
     $this->_contactId   = $session->get('userID');

@@ -8,4 +8,10 @@
     <access_callback>1</access_callback>
     <is_public>true</is_public>
   </item>
+  <item>
+    <path>civicrm/paymentui/feessettings</path>
+    <page_callback>CRM_Paymentui_Form_FeesSettings</page_callback>
+    <title>FeesSettings</title>
+    <access_arguments>access CiviCRM</access_arguments>
+  </item>
 </menu>

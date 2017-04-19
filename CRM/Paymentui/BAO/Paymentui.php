@@ -18,7 +18,7 @@ class CRM_Paymentui_BAO_Paymentui extends CRM_Event_DAO_Participant {
 			INNER JOIN civicrm_participant_payment pp ON ( p.id = pp.participant_id )
 			WHERE
 			p.contact_id IN ($relContactIDs)
-			AND (p.status_id = 14 OR p.status_id = 5) AND p.is_test = 0";
+			AND (p.status_id = 15 OR p.status_id = 5) AND p.is_test = 0";
     $dao = CRM_Core_DAO::executeQuery($sql);
     if ($dao->N) {
       while ($dao->fetch()) {

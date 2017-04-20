@@ -22,7 +22,7 @@ function paymentui_civicrm_tokenValues(&$values, $cids, $job = NULL, $tokens = a
   if (!empty($tokens['partialPayment'])) {
     foreach ($cids as $contactID) {
       $table = '
-         <table class="partialPayment" align="left" border="1" cellpadding="1" cellspacing="1" style="border-collapse: collapse; text-align: left">
+         <table class="partialPayment" align="left" border="1" cellpadding="4" cellspacing="1" style="border-collapse: collapse; text-align: left">
            <thead><tr>
              <th>Event Name</th>
              <th>Contact Name</th>

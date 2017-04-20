@@ -26,7 +26,7 @@ class CRM_Paymentui_BAO_Paymentui extends CRM_Event_DAO_Participant {
         $paymentDetails = CRM_Contribute_BAO_Contribution::getPaymentInfo($dao->id, 'event', FALSE, TRUE);
         //Get display names of the participants and additional participants, if any
         $displayNames   = self::getDisplayNames($dao->id, $dao->display_name);
-
+        $paymentSched   = self::getLateFees($dao->event_id, $paymentDetails['paid']);
         //Create an array with all the participant and payment information
         $participantInfo[$dao->id]['pid']             = $dao->id;
         $participantInfo[$dao->id]['cid']             = $dao->contact_id;
@@ -36,7 +36,8 @@ class CRM_Paymentui_BAO_Paymentui extends CRM_Event_DAO_Participant {
         $participantInfo[$dao->id]['total_amount']    = $paymentDetails['total'];
         $participantInfo[$dao->id]['paid']            = $paymentDetails['paid'];
         $participantInfo[$dao->id]['balance']         = $paymentDetails['balance'];
-        $participantInfo[$dao->id]['latefees']        = self::getLateFees($dao->event_id, $paymentDetails['paid']);
+        $participantInfo[$dao->id]['latefees']        = $paymentSched['lateFee'];
+        $participantInfo[$dao->id]['totalDue']        = $paymentSched['totalDue'];
         $participantInfo[$dao->id]['rowClass']        = 'row_' . $dao->id;
         $participantInfo[$dao->id]['payLater']        = $paymentDetails['payLater'];
       }
@@ -81,20 +82,35 @@ class CRM_Paymentui_BAO_Paymentui extends CRM_Event_DAO_Participant {
       $arrayOfDates = explode("\r\n", $scheduleToParse);
       $totalAmountDue = 0;
       $lateFee = 0;
-      foreach ($arrayOfDates as $key => $dates) {
+      $currentDate = time();
+      $pastKeys = array();
+      foreach ($arrayOfDates as $key => &$dates) {
         list($dueDate, $amountDue) = explode(":", $dates);
         $dueDate = DateTime::createFromFormat('m/d/Y', $dueDate);
         $dueDate = date_timestamp_get($dueDate);
-        $currentDate = time();
+        $dates = array(
+          'line' => $dates,
+          'unixDate' => $dueDate,
+          'amountDue' => $amountDue,
+          'diff' => $dueDate - $currentDate,
+        );
         if ($dueDate < $currentDate) {
+          $pastKeys[] = $key;
           $totalAmountDue = $totalAmountDue + $amountDue;
           if ($totalAmountDue > $amountPaid) {
             $lateFee = $lateFee + $feeAmount;
           }
         }
       }
+      $nextAmountDue = max($pastKeys) + 1;
+      if (!empty($arrayOfDates[$nextAmountDue]['amountDue'])) {
+        $totalAmountDue = $totalAmountDue + $arrayOfDates[$nextAmountDue]['amountDue'];
+      }
     }
-    return $lateFee;
+    return array(
+      'lateFee' => $lateFee,
+      'totalDue' => $totalAmountDue - $amountPaid,
+    );
   }
 
   /**

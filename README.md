@@ -21,3 +21,4 @@ Added Features:
 + Token: 'Table of Partial Payment Information' that generates the table the user sees when on the payment page as a token to be used in emails.
 + Custom Field for late fee schedule "Event Late Fees"
 + Setting page for late fee and processing fee amounts
++ Sets default amount paid input text to be the amount owed if late plus the amount for the next payment

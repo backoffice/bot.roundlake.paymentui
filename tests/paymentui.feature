@@ -40,3 +40,10 @@ Then a <processingFee>% processing fee is added to the payment
 And this amount is displayed as a line item "Processing Fee" on the page
 And a contribution record is made for the logged in contact for the amount <dollars>
 And if they are late fees the late fees are not included in the <dollars> only the payments towards partially paid event registrations are included in <dollars>
+
+
+Scenario: Defaulting to amount due
+
+When viewing the add payment page
+And the event for the row has an event schedule
+Then the amount due will have a default amount that is the amount due by the next payment - the amount paid

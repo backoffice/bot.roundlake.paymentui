@@ -63,15 +63,18 @@ class CRM_Paymentui_Form_Paymentui extends CRM_Core_Form {
     $this->_participantInfo = CRM_Paymentui_BAO_Paymentui::getParticipantInfo($this->_contactId);
     $this->assign('participantInfo', $this->_participantInfo);
     $latefees = 0;
+    $defaults = array();
     if (!empty($this->_participantInfo)) {
       foreach ($this->_participantInfo as $pid => $pInfo) {
         $latefees = $latefees + $pInfo['latefees'];
         $element =& $this->add('text', "payment[$pid]", NULL, array(), FALSE);
+        $defaults["payment[$pid]"] = $pInfo['totalDue'];
       }
     }
     if ($latefees) {
       $this->assign('latefees', $latefees);
     }
+    $this->setDefaults($defaults);
     $this->addButtons(array(
     array(
       'type' => 'submit',

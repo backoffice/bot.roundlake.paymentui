@@ -107,9 +107,13 @@ class CRM_Paymentui_BAO_Paymentui extends CRM_Event_DAO_Participant {
         $totalAmountDue = $totalAmountDue + $arrayOfDates[$nextAmountDue]['amountDue'];
       }
     }
+    $totalAmountDue = $totalAmountDue - $amountPaid;
+    if ($totalAmountDue < 0) {
+      $totalAmountDue = 0;
+    }
     return array(
       'lateFee' => $lateFee,
-      'totalDue' => $totalAmountDue - $amountPaid,
+      'totalDue' => $totalAmountDue,
     );
   }
 

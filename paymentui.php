@@ -22,24 +22,30 @@ function paymentui_civicrm_tokenValues(&$values, $cids, $job = NULL, $tokens = a
   if (!empty($tokens['partialPayment'])) {
     foreach ($cids as $contactID) {
       $table = '
-         <table class="partialPayment">
+      <style type="text/css">
+      .tg  {border-collapse:collapse;border-spacing:0;}
+      .tg td{font-family:Arial, sans-serif;font-size:14px;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;}
+      .tg th{font-family:Arial, sans-serif;font-size:14px;font-weight:normal;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;}
+      .tg .tg-yw4l{vertical-align:top}
+      </style>
+         <table class="partialPayment tg">
            <thead><tr>
-             <th>Event Name</th>
-             <th>Contact Name</th>
-             <th>Total Amount</th>
-             <th>Paid</th>
-             <th>Balance</th>
+             <th class="tg-yw4l">Event Name</th>
+             <th class="tg-yw4l">Contact Name</th>
+             <th class="tg-yw4l">Total Amount</th>
+             <th class="tg-yw4l">Paid</th>
+             <th class="tg-yw4l">Balance</th>
            </tr></thead>
            <tbody>';
       $participantInfo = CRM_Paymentui_BAO_Paymentui::getParticipantInfo($contactID);
       foreach ($participantInfo as $row) {
         $table .= "
          <tr class=" . $row['rowClass'] . ">
-           <td>" . $row['event_name'] . "</td>
-           <td>" . $row['contact_name'] . "</td>
-           <td>" . $row['total_amount'] . "</td>
-           <td>" . $row['paid'] . "</td>
-           <td>" . $row['balance'] . "</td>
+           <td class='tg-yw4l'>" . $row['event_name'] . "</td>
+           <td class='tg-yw4l'>" . $row['contact_name'] . "</td>
+           <td class='tg-yw4l'>" . $row['total_amount'] . "</td>
+           <td class='tg-yw4l'>" . $row['paid'] . "</td>
+           <td class='tg-yw4l'>" . $row['balance'] . "</td>
          </tr>
        ";
       }

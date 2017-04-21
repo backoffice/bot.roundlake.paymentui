@@ -51,8 +51,11 @@ class CRM_Paymentui_Form_Paymentui extends CRM_Core_Form {
     $this->_contactId   = $session->get('userID');
 
     if (!$this->_contactId) {
-      $message = ts('You must be logged in to view this page. To login visit: https://ymcaga.org/login');
-      CRM_Utils_System::setUFMessage($message);
+      // $message = ts('You must be logged in to view this page. To login visit: https://ymcaga.org/login');
+      // CRM_Utils_System::setUFMessage($message);
+      //Message not showing up in joomla:
+      $displayName = 'You must be logged in to view this page. To login visit: <a target="_blank" href="https://ymcaga.org/login">https://ymcaga.org/login</a>';
+      $this->assign('displayName', $displayName);
       return;
     }
     $this->assign('contactId', $this->_contactId);

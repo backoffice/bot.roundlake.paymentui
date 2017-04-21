@@ -16,6 +16,10 @@ class CRM_Paymentui_Form_Paymentui extends CRM_Core_Form {
    * @access public
    */
   public function preProcess() {
+    $loggedInUser = CRM_Core_Session::singleton()->getLoggedInContactID();
+    if (!$loggedInUser) {
+      return;
+    }
     $this->_paymentProcessor = array('billing_mode' => 1);
     $locationTypes = CRM_Core_PseudoConstant::get('CRM_Core_DAO_Address', 'location_type_id', array(), 'validate');
     $this->_bltID = array_search('Billing', $locationTypes);
@@ -47,7 +51,7 @@ class CRM_Paymentui_Form_Paymentui extends CRM_Core_Form {
     $this->_contactId   = $session->get('userID');
 
     if (!$this->_contactId) {
-      $message = ts('You are not authorized to view this page');
+      $message = ts('You must be logged in to view this page. To login visit: https://ymcaga.org/login');
       CRM_Utils_System::setUFMessage($message);
       return;
     }

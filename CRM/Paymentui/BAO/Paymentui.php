@@ -27,6 +27,9 @@ class CRM_Paymentui_BAO_Paymentui extends CRM_Event_DAO_Participant {
         //Get display names of the participants and additional participants, if any
         $displayNames   = self::getDisplayNames($dao->id, $dao->display_name);
         $paymentSched   = self::getLateFees($dao->event_id, $paymentDetails['paid']);
+        if ($paymentDetails['balance'] == 0) {
+          $paymentSched['totalDue'] = 0;
+        }
         //Create an array with all the participant and payment information
         $participantInfo[$dao->id]['pid']             = $dao->id;
         $participantInfo[$dao->id]['cid']             = $dao->contact_id;

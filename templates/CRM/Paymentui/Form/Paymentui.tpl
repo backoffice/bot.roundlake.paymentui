@@ -45,7 +45,11 @@
 		</table>
 	</fieldset>
 </div>
-
+<div class="crm-section">
+	<div class="label">{$form.email.label}</div>
+	<div class="content">{$form.email.html}</div>
+	<div class="clear"></div>
+</div>
 {* FIELD EXAMPLE: OPTION 1 (AUTOMATIC LAYOUT) *}
 {include file="CRM/Core/BillingBlock.tpl" context="front-end"}
 {if $form.payment_processor.label}

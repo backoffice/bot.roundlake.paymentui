@@ -236,4 +236,58 @@ class CRM_Paymentui_BAO_Paymentui extends CRM_Event_DAO_Participant {
     return $fees;
   }
 
+  public static function buildEmailTable($participantInfo, $receipt = FALSE, $processingFee = 0) {
+    $table = '<table class="partialPayment" border="1" cellpadding="4" cellspacing="1" style="border-collapse: collapse; text-align: left">
+     <thead><tr>
+       <th>Event Name</th>
+       <th>Contact Name</th>
+       <th>Cost of Program</th>
+       <th>Paid to Date</th>
+       <th>Balance Owed</th>
+    ';
+    if (!$receipt) {
+      $table .= '</tr></thead><tbody>';
+      foreach ($participantInfo as $row) {
+        $table .= "
+         <tr class=" . $row['rowClass'] . ">
+           <td>" . $row['event_name'] . "</td>
+           <td>" . $row['contact_name'] . "</td>
+           <td>" . $row['total_amount'] . "</td>
+           <td>" . $row['paid'] . "</td>
+           <td>" . $row['balance'] . "</td>
+         </tr>
+       ";
+      }
+      $table .= "</tbody></table>";
+    }
+    if ($receipt) {
+      $lateFeeTotal = 0;
+      $totalAmountPaid = 0;
+      $table .= ' <th>Payment Made</th></tr></thead><tbody>';
+      foreach ($participantInfo as $row) {
+        $table .= "
+         <tr class=" . $row['rowClass'] . ">
+           <td>" . $row['event_name'] . "</td>
+           <td>" . $row['contact_name'] . "</td>
+           <td>" . $row['total_amount'] . "</td>
+           <td>" . ($row['paid'] + $row['partial_payment_pay']) . "</td>
+           <td>" . ($row['balance'] - $row['partial_payment_pay']) . "</td>
+           <td>" . $row['partial_payment_pay'] . "</td>
+         </tr>
+       ";
+        if (!empty($row['latefees'])) {
+          $lateFeeTotal = $lateFeeTotal + $row['latefees'];
+        }
+        if (!empty($row['partial_payment_pay'])) {
+          $totalAmountPaid = $totalAmountPaid + $row['partial_payment_pay'];
+        }
+      }
+      $table .= "</tbody></table><br>";
+      $table .= "<p><strong>Late Fees:</strong> $ " . floatval($lateFeeTotal) . " </p>";
+      $table .= "<p><strong>Processing Fee:</strong> $ " . floatval($processingFee) . " </p>";
+      $table .= "<p><strong>Total:</strong> $ " . (floatval($totalAmountPaid) + floatval($lateFeeTotal) + floatval($processingFee)) . " </p>";
+    }
+    return $table;
+  }
+
 }

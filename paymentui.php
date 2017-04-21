@@ -21,29 +21,8 @@ function paymentui_civicrm_tokens(&$tokens) {
 function paymentui_civicrm_tokenValues(&$values, $cids, $job = NULL, $tokens = array(), $context = NULL) {
   if (!empty($tokens['partialPayment'])) {
     foreach ($cids as $contactID) {
-      $table = '
-         <table class="partialPayment" align="left" border="1" cellpadding="4" cellspacing="1" style="border-collapse: collapse; text-align: left">
-           <thead><tr>
-             <th>Event Name</th>
-             <th>Contact Name</th>
-             <th>Total Amount</th>
-             <th>Paid</th>
-             <th>Balance</th>
-           </tr></thead>
-           <tbody>';
       $participantInfo = CRM_Paymentui_BAO_Paymentui::getParticipantInfo($contactID);
-      foreach ($participantInfo as $row) {
-        $table .= "
-         <tr class=" . $row['rowClass'] . ">
-           <td>" . $row['event_name'] . "</td>
-           <td>" . $row['contact_name'] . "</td>
-           <td>" . $row['total_amount'] . "</td>
-           <td>" . $row['paid'] . "</td>
-           <td>" . $row['balance'] . "</td>
-         </tr>
-       ";
-      }
-      $table .= "</tbody></table>";
+      $table = CRM_Paymentui_BAO_Paymentui::buildEmailTable($participantInfo);
       $partialPaymentTokens = array(
         'partialPayment.table' => $table,
       );
@@ -147,6 +126,20 @@ function paymentui_civicrm_process_partial_payments($paymentParams, $participant
       'domain' => 'bot.roundlake.paymentui',
     )));
   }
+  $receiptTable = CRM_Paymentui_BAO_Paymentui::buildEmailTable($participantInfo, $receipt = TRUE, $processingFeeForPayment);
+  $body = "<p>Thank you for adding a payment see details below:</p> <div>$receiptTable</div><p>Please contact XXX with questions or concerns</p>";
+  $mailParams = array(
+    'from' => 'From Example <from@example.com>',
+    'toName' => "{$paymentParams['first_name']} {$paymentParams['last_name']}",
+    'toEmail' => $paymentParams['email'],
+    'cc'   => '',
+    'bcc' => '',
+    'subject' => 'Thank you for making a payment',
+    'text' => $body,
+    'html' => $body,
+    'replyTo' => 'reply-to header in the email',
+  );
+  $receiptEmail = CRM_Utils_Mail::send($mailParams);
   return $participantInfo;
 }
 

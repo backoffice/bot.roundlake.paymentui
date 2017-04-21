@@ -61,7 +61,6 @@ class CRM_Paymentui_Form_Paymentui extends CRM_Core_Form {
     $this->assign('contactId', $this->_contactId);
     $displayName = CRM_Contact_BAO_Contact::displayName($this->_contactId);
     $this->assign('displayName', $displayName);
-
     //Set column headers for the table
     $columnHeaders = array('Event', 'Registrant', 'Cost', 'Paid to Date', '$$ remaining', 'Make Payment');
     $this->assign('columnHeaders', $columnHeaders);
@@ -81,6 +80,8 @@ class CRM_Paymentui_Form_Paymentui extends CRM_Core_Form {
     if ($latefees) {
       $this->assign('latefees', $latefees);
     }
+    $email = $this->add('text', "email", "Email to send receipt", array(), TRUE);
+    $this->assign('email', $email);
     $this->setDefaults($defaults);
     $this->addButtons(array(
     array(
@@ -187,7 +188,8 @@ class CRM_Paymentui_Form_Paymentui extends CRM_Core_Form {
 
     $partialPaymentInfo = $this->_participantInfo;
     //Process all the partial payments and update the records
-    paymentui_civicrm_process_partial_payments($paymentParams, $this->_participantInfo);
+    $paymentProcessedInfo = paymentui_civicrm_process_partial_payments($paymentParams, $this->_participantInfo);
+    // example: https://github.com/civicrm/civicrm-core/blob/648631cd94799e87fe2347487d465b1a7256aa57/tests/phpunit/CRM/Core/Config/MailerTest.php#L75
     parent::postProcess();
 
     //Define status message
@@ -195,7 +197,7 @@ class CRM_Paymentui_Form_Paymentui extends CRM_Core_Form {
     CRM_Core_Session::setStatus($statusMsg, ts('Saved'), 'success');
 
     //Redirect to the same URL
-    $url     = CRM_Utils_System::url('civicrm/roundlake/add/payment', "reset=1");
+    $url     = CRM_Utils_System::url('civicrm/addpayment', "reset=1");
     $session = CRM_Core_Session::singleton();
     CRM_Utils_System::redirect($url);
   }

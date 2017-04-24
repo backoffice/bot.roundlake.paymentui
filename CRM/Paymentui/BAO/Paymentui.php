@@ -90,8 +90,8 @@ class CRM_Paymentui_BAO_Paymentui extends CRM_Event_DAO_Participant {
       $pastKeys = array();
       foreach ($arrayOfDates as $key => &$dates) {
         list($dateText, $amountDue) = explode(":", $dates);
-        $dateText = DateTime::createFromFormat('m/d/Y', $dateText);
-        $dueDate = date_timestamp_get($dateText);
+        $dueDate = DateTime::createFromFormat('m/d/Y', $dateText);
+        $dueDate = date_timestamp_get($dueDate);
         $dates = array(
           'dateText' => $dateText,
           'line' => $dates,

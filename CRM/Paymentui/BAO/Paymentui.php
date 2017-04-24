@@ -302,4 +302,29 @@ class CRM_Paymentui_BAO_Paymentui extends CRM_Event_DAO_Participant {
     return $table;
   }
 
+  public static function buildSimpleEmailTable($participantInfo) {
+    $table = '<table class="partialPayment" cellspacing="1" style="border-collapse: collapse; text-align: left">
+     <thead><tr>
+       <th>Event Name</th>
+       <th>Contact Name</th>
+       <th>Next Payment Due Date</th>
+       <th>Next Payment Due Amount</th>
+    </tr></thead><tbody>
+    ';
+    $amountOwed = 0;
+    foreach ($participantInfo as $row) {
+      $amountOwed = $amountOwed + $row['totalDue'];
+      $table .= "
+       <tr class=" . $row['rowClass'] . ">
+         <td>" . $row['event_name'] . "</td>
+         <td>" . $row['contact_name'] . "</td>
+         <td>" . $row['nextDueDate'] . "</td>
+         <td>" . $row['totalDue'] . "</td>
+       </tr>
+     ";
+    }
+    $table .= "</tbody></table><br><strong>Total Amount Due: </strong> $" . $amountOwed;
+    return $table;
+  }
+
 }

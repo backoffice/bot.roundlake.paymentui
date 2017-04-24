@@ -10,6 +10,7 @@ require_once 'paymentui.civix.php';
 function paymentui_civicrm_tokens(&$tokens) {
   $tokens['partialPayment'] = array(
     'partialPayment.table' => 'Table of Partial Payment Information',
+    'partialPayment.simpleTable' => 'Simple table of Partial Payment Event Information',
   );
 }
 
@@ -23,8 +24,10 @@ function paymentui_civicrm_tokenValues(&$values, $cids, $job = NULL, $tokens = a
     foreach ($cids as $contactID) {
       $participantInfo = CRM_Paymentui_BAO_Paymentui::getParticipantInfo($contactID);
       $table = CRM_Paymentui_BAO_Paymentui::buildEmailTable($participantInfo);
+      $simpleTable = CRM_Paymentui_BAO_Paymentui::buildSimpleEmailTable($participantInfo);
       $partialPaymentTokens = array(
         'partialPayment.table' => $table,
+        'partialPayment.simpleTable' => $simpleTable,
       );
       $values[$contactID] = empty($values[$contactID]) ? $partialPaymentTokens : $values[$contactID] + $partialPaymentTokens;
     }

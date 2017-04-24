@@ -40,6 +40,7 @@ class CRM_Paymentui_BAO_Paymentui extends CRM_Event_DAO_Participant {
         $participantInfo[$dao->id]['paid']            = $paymentDetails['paid'];
         $participantInfo[$dao->id]['balance']         = $paymentDetails['balance'];
         $participantInfo[$dao->id]['latefees']        = $paymentSched['lateFee'];
+        $participantInfo[$dao->id]['nextDueDate']     = $paymentSched['nextDueDate'];
         $participantInfo[$dao->id]['totalDue']        = $paymentSched['totalDue'];
         $participantInfo[$dao->id]['rowClass']        = 'row_' . $dao->id;
         $participantInfo[$dao->id]['payLater']        = $paymentDetails['payLater'];
@@ -88,10 +89,11 @@ class CRM_Paymentui_BAO_Paymentui extends CRM_Event_DAO_Participant {
       $currentDate = time();
       $pastKeys = array();
       foreach ($arrayOfDates as $key => &$dates) {
-        list($dueDate, $amountDue) = explode(":", $dates);
-        $dueDate = DateTime::createFromFormat('m/d/Y', $dueDate);
-        $dueDate = date_timestamp_get($dueDate);
+        list($dateText, $amountDue) = explode(":", $dates);
+        $dateText = DateTime::createFromFormat('m/d/Y', $dateText);
+        $dueDate = date_timestamp_get($dateText);
         $dates = array(
+          'dateText' => $dateText,
           'line' => $dates,
           'unixDate' => $dueDate,
           'amountDue' => $amountDue,
@@ -106,8 +108,12 @@ class CRM_Paymentui_BAO_Paymentui extends CRM_Event_DAO_Participant {
         }
       }
       $nextAmountDue = max($pastKeys) + 1;
+      $nextDueDate = '';
       if (!empty($arrayOfDates[$nextAmountDue]['amountDue'])) {
         $totalAmountDue = $totalAmountDue + $arrayOfDates[$nextAmountDue]['amountDue'];
+      }
+      if (!empty($arrayOfDates[$nextAmountDue]['dateText'])) {
+        $nextDueDate = $totalAmountDue + $arrayOfDates[$nextAmountDue]['dateText'];
       }
     }
     $totalAmountDue = $totalAmountDue - $amountPaid;
@@ -115,8 +121,9 @@ class CRM_Paymentui_BAO_Paymentui extends CRM_Event_DAO_Participant {
       $totalAmountDue = 0;
     }
     return array(
-      'lateFee' => $lateFee,
-      'totalDue' => $totalAmountDue,
+      'lateFee'       => $lateFee,
+      'totalDue'      => $totalAmountDue,
+      'nextDueDate'   => $nextDueDate,
     );
   }
 
@@ -246,10 +253,10 @@ class CRM_Paymentui_BAO_Paymentui extends CRM_Event_DAO_Participant {
        <th>Contact Name</th>
        <th>Cost of Program</th>
        <th>Paid to Date</th>
-       <th>Balance Owed</th>
+       <th>Total Balance Owed</th>
     ';
     if (!$receipt) {
-      $table .= '</tr></thead><tbody>';
+      $table .= '<th>Next Payment Due Date</th><th>Next Payment Due Amount</th></tr></thead><tbody>';
       foreach ($participantInfo as $row) {
         $table .= "
          <tr class=" . $row['rowClass'] . ">
@@ -258,6 +265,8 @@ class CRM_Paymentui_BAO_Paymentui extends CRM_Event_DAO_Participant {
            <td>" . $row['total_amount'] . "</td>
            <td>" . $row['paid'] . "</td>
            <td>" . $row['balance'] . "</td>
+           <td>" . $row['nextDueDate'] . "</td>
+           <td>" . $row['totalDue'] . "</td>
          </tr>
        ";
       }

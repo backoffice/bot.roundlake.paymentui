@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns = "http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv = "Content-Type" content="text/html; charset=UTF-8" />
+      <title></title>
+  </head>
+  <body>
+    <table style = "margin-top:2px;padding-left:7px;">
+      <tr>
+        <td><img src = "{$resourceBase}/i/civi99.png" height = "34px" width = "99px"></td>
+      </tr>
+    </table>
+    <center>
+      <table style = "padding-right:19px;font-family: Arial, Verdana, sans-serif;" width = "500" height = "100" border = "0" cellpadding = "2" cellspacing = "1">
+  <tr>
+    <td style = "padding-left:15px;" ><b><font size = "4" align = "center">Account Statement</font></b></td>
+          <td colspan = "1"></td>
+          <td style = "padding-left:70px;"><b><font size = "1" align = "center" >Statement Date:</font></b></td>
+          <td><font size = "1" align = "right">{$domain_organization}</font></td>
+  </tr>
+        <tr>
+           <td style = "padding-left:15px;"><font size = "1" align = "center" >{contact.display_name}</font></td>
+         <td colspan = "1"></td>
+         <td style = "padding-left:70px;"><font size = "1" align = "right">{$invoice_date}</font></td>
+   <td><font size = "1" align = "right">
+     <strong>Engagement</strong><br>Post Office Box 3789</font></td>
+  </tr>
+        <tr>
+          <td style = "padding-left:17px;"><font size = "1" align = "center">{contact.street_address}   {contact.supplemental_address_1}</font></td>
+          <td colspan = "1"></td>
+          <td style = "padding-left:70px;"><b><font size = "1" align = "right">Statement Number:</font></b></td>
+    <td ><font size = "1" align = "right">Georgia</font></td>
+        </tr>
+        <tr>
+          <td style = "padding-left:17px;"><font size = "1" align = "center">{contact.supplemental_address_2}  {contact.stateProvinceAbbreviation}</font></td>
+          <td colspan="1"></td>
+          <td style = "padding-left:70px;"><font size = "1" align = "right">{$invoice_id}</font></td>
+    <td><font size = "1" align = "right">Cartersville 30120
+    </font></td>
+  </tr>
+  <tr>
+          <td style = "padding-left:17px;"><font size = "1" align = "right">{contact.city}  {contact.postal_code}</font></td>
+          <td colspan="1"></td>
+    <td height = "10" style = "padding-left:70px;"><b><font size = "1"align = "right">Reference:</font></b></td>
+    <td><font size = "1" align = "right"></font></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td></td>
+    <td style = "padding-left:70px;"><font size = "1"align = "right">{$source}</font></td>
+    <td><font size = "1" align = "right">770-455-9622</font> </td>
+  </tr>
+  <tr>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td><font size = "1" align = "right">studentaccounts@georgiacivics.org</font> </td>
+  </tr>
+      </table>
+      {partialPayment.table}
+      <table style = "margin-top:5px;padding-right:45px;">
+        <tr>
+          <td><img src = "{$resourceBase}/i/contribute/cut_line.png" height = "15" width = "630"></td>
+        </tr>
+      </table>
+  <table style = "margin-top:6px;padding-right:20px;font-family: Arial, Verdana, sans-serif" width = "480" border = "0"cellpadding = "-5" cellspacing="19" id = "desc">
+    <tr>
+      <td width="60%"><b><font size = "4" align = "right">PAYMENT COUPON</font></b> <br/><br/> <font size = "1" align = "right"><b>To: </b>      <div style="width:17em;word-wrap:break-word;">
+    <strong>Engagement</strong> <br />
+    Post Office Box 3789 <br />
+    Cartersville, Georgia 30120 <br />
+    770-455-9622 <br />
+    studentaccounts@georgiacivics.org </div>
+            </td>
+            <td width="40%">
+              {partialPayment.simpleTable}
+            </td>
+    </tr>
+    </table>
+  </body>
+</html>

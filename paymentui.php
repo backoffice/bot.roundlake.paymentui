@@ -9,6 +9,7 @@ require_once 'paymentui.civix.php';
  */
 function paymentui_civicrm_tokens(&$tokens) {
   $tokens['partialPayment'] = array(
+    'partialPayment.today_format_full' => 'Todays Date',
     'partialPayment.table' => 'Table of Partial Payment Information',
     'partialPayment.simpleTable' => 'Simple table of Partial Payment Event Information',
   );
@@ -26,6 +27,7 @@ function paymentui_civicrm_tokenValues(&$values, $cids, $job = NULL, $tokens = a
       $table = CRM_Paymentui_BAO_Paymentui::buildEmailTable($participantInfo);
       $simpleTable = CRM_Paymentui_BAO_Paymentui::buildSimpleEmailTable($participantInfo);
       $partialPaymentTokens = array(
+        'partialPayment.today_format_full' => CRM_Utils_Date::customFormat(date('Y-m-d'), NULL, array('Y', 'm', 'd')),
         'partialPayment.table' => $table,
         'partialPayment.simpleTable' => $simpleTable,
       );

@@ -11,50 +11,45 @@
       </tr>
     </table>
     <center>
-      <table style = "padding-right:19px;font-family: Arial, Verdana, sans-serif;" width = "500" height = "100" border = "0" cellpadding = "2" cellspacing = "1">
+      <table style = "padding-right:19px;font-family: Arial, Verdana, sans-serif;" width = "500" height = "100" border = "1" cellpadding = "2" cellspacing = "1">
   <tr>
-    <td style = "padding-left:15px;" ><b><font size = "4" align = "center">Account Statement</font></b></td>
-          <td colspan = "1"></td>
-          <td style = "padding-left:70px;"><b><font size = "1" align = "center" >Statement Date:</font></b></td>
-          <td><font size = "1" align = "right">{$domain_organization}</font></td>
-  </tr>
-        <tr>
-           <td style = "padding-left:15px;"><font size = "1" align = "center" >{contact.display_name}</font></td>
-         <td colspan = "1"></td>
-         <td style = "padding-left:70px;"><font size = "1" align = "right">{$invoice_date}</font></td>
-   <td><font size = "1" align = "right">
-     <strong>Engagement</strong><br>Post Office Box 3789</font></td>
-  </tr>
-        <tr>
-          <td style = "padding-left:17px;"><font size = "1" align = "center">{contact.street_address}   {contact.supplemental_address_1}</font></td>
-          <td colspan = "1"></td>
-          <td style = "padding-left:70px;"><b><font size = "1" align = "right">Statement Number:</font></b></td>
-    <td ><font size = "1" align = "right">Georgia</font></td>
-        </tr>
-        <tr>
-          <td style = "padding-left:17px;"><font size = "1" align = "center">{contact.supplemental_address_2}  {contact.stateProvinceAbbreviation}</font></td>
-          <td colspan="1"></td>
-          <td style = "padding-left:70px;"><font size = "1" align = "right">{$invoice_id}</font></td>
-    <td><font size = "1" align = "right">Cartersville 30120
-    </font></td>
+    <td style = "padding-left:15px;" ><b><font size = "4" align = "center" valign="top">Account Statement</font></b></td>
+    <td colspan = "4"></td>
   </tr>
   <tr>
-          <td style = "padding-left:17px;"><font size = "1" align = "right">{contact.city}  {contact.postal_code}</font></td>
-          <td colspan="1"></td>
-    <td height = "10" style = "padding-left:70px;"><b><font size = "1"align = "right">Reference:</font></b></td>
-    <td><font size = "1" align = "right"></font></td>
-  </tr>
-  <tr>
-    <td></td>
-    <td></td>
-    <td style = "padding-left:70px;"><font size = "1"align = "right">{$source}</font></td>
-    <td><font size = "1" align = "right">770-455-9622</font> </td>
-  </tr>
-  <tr>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td><font size = "1" align = "right">studentaccounts@georgiacivics.org</font> </td>
+    <td style = "padding-left:15px;" valign="top">
+      <font size = "1" align = "left">
+        <div style="width:17em;word-wrap:break-word;padding-top:15px;">
+      {contact.display_name} <br />
+      {contact.street_address}
+      {contact.supplemental_address_1}
+      {contact.supplemental_address_2}
+      {contact.stateProvinceAbbreviation}
+      {contact.city}
+      {contact.postal_code}
+      </div>
+      </font>
+    </td>
+    <td colspan = "1"></td>
+    <td style = "padding-left:15px;">
+      <div style="word-wrap:break-word;padding-top:15px;">
+       <b><font size = "1" align = "center" >Statement Date:</font></b>
+       <font size = "1" align = "right">{partialPayment.today_format_full}</font><p></p>
+       <b><font size = "1" align = "right">Statement Number:</font></b>
+       <font size = "1" align = "right">{$invoice_id}</font><p></p>
+       <b><font size = "1"align = "right">Reference:</font></b>
+       <font size = "1"align = "right">Partial Event Payment Invoice</font>
+     </div>
+      </td>
+   <td valign="top" style="padding-bottom:15px;"><font size = "1" align = "left" >     <div style="width:17em;word-wrap:break-word;padding-top:15px;">
+
+     <font size = "1" align = "right">Georgia Y</font><p><p/>
+  <strong>Engagement</strong> <br />
+  Post Office Box 3789 <br />
+  Cartersville, Georgia 30120 <br />
+  770-455-9622 <br />
+  studentaccounts@georgiacivics.org </div>
+   </td>
   </tr>
       </table>
       {partialPayment.table}

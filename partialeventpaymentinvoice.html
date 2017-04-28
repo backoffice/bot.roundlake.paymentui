@@ -7,44 +7,39 @@
   <body>
     <table style = "margin-top:2px;padding-left:7px;">
       <tr>
-        <td><img src = "{$resourceBase}/i/civi99.png" height = "34px" width = "99px"></td>
+        <td><img src ="https://ymcaga.org/media/civicrm/persist/contribute/images/Georgia-Center-stacked-logo-NO-Y.JPG" height = "85.5px" width = "225px"></td>
       </tr>
     </table>
     <center>
-      <table style = "padding-right:19px;font-family: Arial, Verdana, sans-serif;" width = "500" height = "100" border = "1" cellpadding = "2" cellspacing = "1">
-  <tr>
+      <table style = "padding-bottom:15px; padding-right:19px;font-family: Arial, Verdana, sans-serif;" width = "500" height = "100" cellpadding = "2" cellspacing = "1">
+  <tr style="padding-bottom:15px;">
     <td style = "padding-left:15px;" ><b><font size = "4" align = "center" valign="top">Account Statement</font></b></td>
     <td colspan = "4"></td>
   </tr>
   <tr>
     <td style = "padding-left:15px;" valign="top">
       <font size = "1" align = "left">
-        <div style="width:17em;word-wrap:break-word;padding-top:15px;">
+        <div style="width:17em;word-wrap:break-word;">
       {contact.display_name} <br />
       {contact.street_address}
       {contact.supplemental_address_1}
-      {contact.supplemental_address_2}
-      {contact.stateProvinceAbbreviation}
-      {contact.city}
-      {contact.postal_code}
+      {contact.supplemental_address_2}<br/>
+      {contact.city},  {contact.state_province}  {contact.postal_code}
       </div>
       </font>
     </td>
     <td colspan = "1"></td>
-    <td style = "padding-left:15px;">
-      <div style="word-wrap:break-word;padding-top:15px;">
-       <b><font size = "1" align = "center" >Statement Date:</font></b>
-       <font size = "1" align = "right">{partialPayment.today_format_full}</font><p></p>
-       <b><font size = "1" align = "right">Statement Number:</font></b>
-       <font size = "1" align = "right">{$invoice_id}</font><p></p>
-       <b><font size = "1"align = "right">Reference:</font></b>
-       <font size = "1"align = "right">Partial Event Payment Invoice</font>
-     </div>
-      </td>
-   <td valign="top" style="padding-bottom:15px;"><font size = "1" align = "left" >     <div style="width:17em;word-wrap:break-word;padding-top:15px;">
-
-     <font size = "1" align = "right">Georgia Y</font><p><p/>
-  <strong>Engagement</strong> <br />
+    <td style = "padding-left:15px;padding-top:0px;font-size:10px;"  valign="top" align="left"><font size = "1" align = "right">
+       <b>Statement Date:</b><br />
+       {partialPayment.today_format_full}<br /><p></p>
+       <b>Statement Number:</b>
+       {$invoice_id}<br /><p></p>
+       <b>Reference:</b><br />
+       Partial Event Payment Invoice
+     </font></td>
+   <td valign="top" style="padding-bottom:15px;"><font size = "1" align = "left" >
+     <div style="width:17em;word-wrap:break-word;">
+     <font size = "1" align = "right"><strong>Engagement</strong></font><br /><p><p/>
   Post Office Box 3789 <br />
   Cartersville, Georgia 30120 <br />
   770-455-9622 <br />
@@ -52,22 +47,25 @@
    </td>
   </tr>
       </table>
+      <font size = "1" align = "left" >
       {partialPayment.table}
+    </font>
       <table style = "margin-top:5px;padding-right:45px;">
         <tr>
-          <td><img src = "{$resourceBase}/i/contribute/cut_line.png" height = "15" width = "630"></td>
+          <td><img src = "https://ymcaga.org/media/civicrm/persist/contribute/images/cut_line.png" height = "15" width = "630"></td>
         </tr>
       </table>
   <table style = "margin-top:6px;padding-right:20px;font-family: Arial, Verdana, sans-serif" width = "480" border = "0"cellpadding = "-5" cellspacing="19" id = "desc">
+    <tr><td><b><font size = "4" align = "right">PAYMENT COUPON</font></b></td></tr>
     <tr>
-      <td width="60%"><b><font size = "4" align = "right">PAYMENT COUPON</font></b> <br/><br/> <font size = "1" align = "right"><b>To: </b>      <div style="width:17em;word-wrap:break-word;">
+      <td width="30%" style="font-size:10px;">To: </b>      <div style="width:17em;word-wrap:break-word;">
     <strong>Engagement</strong> <br />
     Post Office Box 3789 <br />
     Cartersville, Georgia 30120 <br />
     770-455-9622 <br />
     studentaccounts@georgiacivics.org </div>
             </td>
-            <td width="40%">
+            <td width="70%" style="font-size:10px;">
               {partialPayment.simpleTable}
             </td>
     </tr>

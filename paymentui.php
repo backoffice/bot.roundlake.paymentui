@@ -132,7 +132,11 @@ function paymentui_civicrm_process_partial_payments($paymentParams, $participant
     )));
   }
   $receiptTable = CRM_Paymentui_BAO_Paymentui::buildEmailTable($participantInfo, $receipt = TRUE, $processingFeeForPayment);
-  $body = "<p>Thank you for adding a payment see details below:</p> <div>$receiptTable</div><p>Please contact XXX with questions or concerns</p>";
+  $body = "<p>Thank you for completing your payment. See details below:</p>
+    <div>$receiptTable</div>
+    <p>Please contact us with any concerns.</p>
+    <p>Phone 770-455-9622</p>
+    <p>Email us at studentaccounts@georgiacivics.org</p>";
   $mailParams = array(
     'from' => 'From Example <from@example.com>',
     'toName' => "{$paymentParams['first_name']} {$paymentParams['last_name']}",

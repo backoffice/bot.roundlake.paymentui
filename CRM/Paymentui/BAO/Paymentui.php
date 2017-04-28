@@ -323,7 +323,7 @@ class CRM_Paymentui_BAO_Paymentui extends CRM_Event_DAO_Participant {
        </tr>
      ";
     }
-    $table .= "</tbody></table><br><strong>Total Amount Due: </strong> $" . $amountOwed;
+    $table .= "</tbody></table><br><div style='float:right;'><strong>Total Amount Due: </strong> $" . $amountOwed . "</div>";
     return $table;
   }
 

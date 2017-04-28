@@ -330,9 +330,9 @@ class CRM_Paymentui_BAO_Paymentui extends CRM_Event_DAO_Participant {
     $table .= "
     <tr>
       <td colspan='2'><td>
-      <td colspan='2'>
+      <td colspan='2' style='text-align:left;'>
         <p><strong>Late Fees: </strong> $" . $lateFeeTotal . "</p>
-        <p><strong>Total Amount Due: </strong> $" . $amountOwed . "</p>
+        <p><strong>Total Amount Due: </strong> $" . $amountOwed + $lateFeeTotal . "</p>
       </td>
     </tr></tbody></table><br>";
     return $table;

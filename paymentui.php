@@ -138,12 +138,12 @@ function paymentui_civicrm_process_partial_payments($paymentParams, $participant
     <p>Phone 770-455-9622</p>
     <p>Email us at studentaccounts@georgiacivics.org</p>";
   $mailParams = array(
-    'from' => 'From Example <from@example.com>',
+    'from' => 'Student Accounts <studentaccounts@georgiacivics.org>',
     'toName' => "{$paymentParams['first_name']} {$paymentParams['last_name']}",
     'toEmail' => $paymentParams['email'],
     'cc'   => '',
     'bcc' => '',
-    'subject' => 'Thank you for making a payment',
+    'subject' => 'Your Account Statement for Student Travel',
     'text' => $body,
     'html' => $body,
     'replyTo' => 'reply-to header in the email',

@@ -262,11 +262,11 @@ class CRM_Paymentui_BAO_Paymentui extends CRM_Event_DAO_Participant {
          <tr class=" . $row['rowClass'] . ">
            <td>" . $row['event_name'] . "</td>
            <td>" . $row['contact_name'] . "</td>
-           <td>" . $row['total_amount'] . "</td>
-           <td>" . $row['paid'] . "</td>
-           <td>" . $row['balance'] . "</td>
+           <td> $" . $row['total_amount'] . "</td>
+           <td> $" . $row['paid'] . "</td>
+           <td> $" . $row['balance'] . "</td>
            <td>" . $row['nextDueDate'] . "</td>
-           <td>" . $row['totalDue'] . "</td>
+           <td> $" . $row['totalDue'] . "</td>
          </tr>
        ";
       }
@@ -281,10 +281,10 @@ class CRM_Paymentui_BAO_Paymentui extends CRM_Event_DAO_Participant {
          <tr class=" . $row['rowClass'] . ">
            <td>" . $row['event_name'] . "</td>
            <td>" . $row['contact_name'] . "</td>
-           <td>" . $row['total_amount'] . "</td>
-           <td>" . ($row['paid'] + $row['partial_payment_pay']) . "</td>
-           <td>" . ($row['balance'] - $row['partial_payment_pay']) . "</td>
-           <td>" . $row['partial_payment_pay'] . "</td>
+           <td> $" . $row['total_amount'] . "</td>
+           <td> $" . ($row['paid'] + $row['partial_payment_pay']) . "</td>
+           <td> $" . ($row['balance'] - $row['partial_payment_pay']) . "</td>
+           <td> $" . $row['partial_payment_pay'] . "</td>
          </tr>
        ";
         if (!empty($row['latefees'])) {
@@ -311,6 +311,7 @@ class CRM_Paymentui_BAO_Paymentui extends CRM_Event_DAO_Participant {
        <th>Payment Amount Due</th>
     </tr></thead><tbody>
     ';
+    $lateFeeTotal = 0;
     $amountOwed = 0;
     foreach ($participantInfo as $row) {
       $amountOwed = $amountOwed + $row['totalDue'];
@@ -319,11 +320,21 @@ class CRM_Paymentui_BAO_Paymentui extends CRM_Event_DAO_Participant {
          <td>" . $row['event_name'] . "</td>
          <td>" . $row['contact_name'] . "</td>
          <td>" . $row['nextDueDate'] . "</td>
-         <td>" . $row['totalDue'] . "</td>
+         <td> $" . $row['totalDue'] . "</td>
        </tr>
      ";
+      if (!empty($row['latefees'])) {
+        $lateFeeTotal = $lateFeeTotal + $row['latefees'];
+      }
     }
-    $table .= "</tbody></table><br><div style='float:right;'><strong>Total Amount Due: </strong> $" . $amountOwed . "</div>";
+    $table .= "
+    <tr>
+      <td colspan='2'><td>
+      <td colspan='2'>
+        <p><strong>Late Fees: </strong> $" . $lateFeeTotal . "</p>
+        <p><strong>Total Amount Due: </strong> $" . $amountOwed . "</p>
+      </td>
+    </tr></tbody></table><br>";
     return $table;
   }
 

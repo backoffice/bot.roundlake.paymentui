@@ -303,7 +303,7 @@ class CRM_Paymentui_BAO_Paymentui extends CRM_Event_DAO_Participant {
   }
 
   public static function buildSimpleEmailTable($participantInfo) {
-    $table = '<table class="partialPayment" cellspacing="1" style="border-collapse: collapse; text-align: left">
+    $table = '<table class="partialPayment" cellspacing="5" style="border-collapse: collapse; text-align: left">
      <thead align="left"><tr>
        <th>Event Name</th>
        <th>Contact Name</th>

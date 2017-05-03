@@ -256,7 +256,11 @@ class CRM_Paymentui_BAO_Paymentui extends CRM_Event_DAO_Participant {
        <th>Total Balance Owed</th>
     ';
     if (!$receipt) {
-      $table .= '<th>Next Payment Due Date</th><th>Next Payment Due Amount</th></tr></thead><tbody>';
+      $table .= '
+        <th>Next Payment Due Date</th>
+        <th>Late Fees (if applicable)</th>
+        <th>Next Payment Due Amount</th>
+      </tr></thead><tbody>';
       foreach ($participantInfo as $row) {
         $table .= "
          <tr class=" . $row['rowClass'] . ">
@@ -266,6 +270,7 @@ class CRM_Paymentui_BAO_Paymentui extends CRM_Event_DAO_Participant {
            <td> $" . self::formatNumberAsMoney($row['paid']) . "</td>
            <td> $" . self::formatNumberAsMoney($row['balance']) . "</td>
            <td>" . $row['nextDueDate'] . "</td>
+           <td>" . self::formatNumberAsMoney(floatval($row['latefees'])) . "</td>
            <td> $" . self::formatNumberAsMoney($row['totalDue']) . "</td>
          </tr>
        ";
@@ -275,7 +280,10 @@ class CRM_Paymentui_BAO_Paymentui extends CRM_Event_DAO_Participant {
     if ($receipt) {
       $lateFeeTotal = 0;
       $totalAmountPaid = 0;
-      $table .= ' <th>Payment Made</th></tr></thead><tbody>';
+      $table .= '
+        <th>Late Fees</th>
+        <th>Payment Made</th>
+      </tr></thead><tbody>';
       foreach ($participantInfo as $row) {
         $table .= "
          <tr class=" . $row['rowClass'] . ">
@@ -284,6 +292,7 @@ class CRM_Paymentui_BAO_Paymentui extends CRM_Event_DAO_Participant {
            <td> $" . self::formatNumberAsMoney($row['total_amount']) . "</td>
            <td> $" . self::formatNumberAsMoney(($row['paid'] + $row['partial_payment_pay'])) . "</td>
            <td> $" . self::formatNumberAsMoney(($row['balance'] - $row['partial_payment_pay'])) . "</td>
+           <td>" . self::formatNumberAsMoney(floatval($row['latefees'])) . "</td>
            <td> $" . self::formatNumberAsMoney($row['partial_payment_pay']) . "</td>
          </tr>
        ";

@@ -141,7 +141,7 @@ function paymentui_civicrm_process_partial_payments($paymentParams, $participant
     'from' => 'Student Accounts <studentaccounts@georgiacivics.org>',
     'toName' => "{$paymentParams['first_name']} {$paymentParams['last_name']}",
     'toEmail' => $paymentParams['email'],
-    'cc'   => '',
+    'cc'   => 'studentaccounts@georgiacivics.org',
     'bcc' => '',
     'subject' => 'Your Account Statement for Student Travel',
     'text' => $body,

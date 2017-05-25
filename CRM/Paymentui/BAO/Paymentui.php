@@ -93,7 +93,7 @@ class CRM_Paymentui_BAO_Paymentui extends CRM_Event_DAO_Participant {
         list($dateText, $amountDue) = explode(":", $dates);
         $dueDate = DateTime::createFromFormat('m/d/Y', $dateText);
         $dueDate = date_timestamp_get($dueDate);
-        $amountOwed = $totalAmountOwedOnThisDay + $amountDue;
+        $amountOwed = $amountOwed + $amountDue;
         $dates = array(
           'dateText' => $dateText,
           'line' => $dates,
@@ -111,19 +111,18 @@ class CRM_Paymentui_BAO_Paymentui extends CRM_Event_DAO_Participant {
         }
       }
       $nextAmountDue = max($pastKeys) + 1;
-      for ($nextAmountDue; $totalAmountDue >= 0; $nextAmountDue++) {
-        if (!empty($arrayOfDates[$nextAmountDue]['amountDue'])) {
-          $totalAmountDue = $totalAmountDue + $arrayOfDates[$nextAmountDue]['amountDue'];
+      for ($nextAmountDue; $paymentAmount >= 0; $nextAmountDue++) {
+        if (!empty($arrayOfDates[$nextAmountDue]['amountOwed'])) {
+          $paymentAmount = $amountPaid - $arrayOfDates[$nextAmountDue]['amountDue'];
         }
         if (!empty($arrayOfDates[$nextAmountDue]['dateText'])) {
           $nextDueDate = $arrayOfDates[$nextAmountDue]['dateText'];
         }
-        $totalAmountDue = $totalAmountDue - $amountPaid;
       }
     }
     return array(
       'lateFee'       => $lateFee,
-      'totalDue'      => $totalAmountDue,
+      'totalDue'      => $paymentAmount,
       'nextDueDate'   => $nextDueDate,
     );
   }

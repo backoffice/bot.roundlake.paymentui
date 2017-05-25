@@ -85,6 +85,7 @@ class CRM_Paymentui_BAO_Paymentui extends CRM_Event_DAO_Participant {
       $scheduleToParse = $lateFeeSchedule['api.Event.getsingle']["custom_{$lateFeeSchedule['id']}"];
       $arrayOfDates = explode("\r\n", $scheduleToParse);
       $totalAmountDue = 0;
+      $amountOwed = 0;
       $lateFee = 0;
       $currentDate = time();
       $pastKeys = array();
@@ -92,11 +93,13 @@ class CRM_Paymentui_BAO_Paymentui extends CRM_Event_DAO_Participant {
         list($dateText, $amountDue) = explode(":", $dates);
         $dueDate = DateTime::createFromFormat('m/d/Y', $dateText);
         $dueDate = date_timestamp_get($dueDate);
+        $amountOwed = $totalAmountOwedOnThisDay + $amountDue;
         $dates = array(
           'dateText' => $dateText,
           'line' => $dates,
           'unixDate' => $dueDate,
           'amountDue' => $amountDue,
+          'amountOwed' => $amountOwed,
           'diff' => $dueDate - $currentDate,
         );
         if ($dueDate < $currentDate) {
@@ -108,8 +111,7 @@ class CRM_Paymentui_BAO_Paymentui extends CRM_Event_DAO_Participant {
         }
       }
       $nextAmountDue = max($pastKeys) + 1;
-      for ($nextAmountDue; $totalAmountDue > 0; $nextAmountDue++) {
-        $nextDueDate = '';
+      for ($nextAmountDue; $totalAmountDue >= 0; $nextAmountDue++) {
         if (!empty($arrayOfDates[$nextAmountDue]['amountDue'])) {
           $totalAmountDue = $totalAmountDue + $arrayOfDates[$nextAmountDue]['amountDue'];
         }

@@ -110,19 +110,17 @@ class CRM_Paymentui_BAO_Paymentui extends CRM_Event_DAO_Participant {
           }
         }
       }
-      $nextAmountDue = max($pastKeys) + 1;
-      for ($nextAmountDue; $paymentAmount >= 0; $nextAmountDue++) {
-        if (!empty($arrayOfDates[$nextAmountDue]['amountOwed'])) {
-          $paymentAmount = $amountPaid - $arrayOfDates[$nextAmountDue]['amountDue'];
-        }
-        if (!empty($arrayOfDates[$nextAmountDue]['dateText'])) {
-          $nextDueDate = $arrayOfDates[$nextAmountDue]['dateText'];
+      foreach ($arrayOfDates as $key => &$dates) {
+        if ($lateFee == 0 && $dates['amountOwed'] > $amountPaid) {
+          $totalAmountDue = $dates['amountDue'];
+          $nextDueDate = $dates['dateText'];
+          break;
         }
       }
     }
     return array(
       'lateFee'       => $lateFee,
-      'totalDue'      => $paymentAmount,
+      'totalDue'      => $totalAmountDue,
       'nextDueDate'   => $nextDueDate,
     );
   }

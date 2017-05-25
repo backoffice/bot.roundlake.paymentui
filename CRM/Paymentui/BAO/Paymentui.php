@@ -108,17 +108,16 @@ class CRM_Paymentui_BAO_Paymentui extends CRM_Event_DAO_Participant {
         }
       }
       $nextAmountDue = max($pastKeys) + 1;
-      $nextDueDate = '';
-      if (!empty($arrayOfDates[$nextAmountDue]['amountDue'])) {
-        $totalAmountDue = $totalAmountDue + $arrayOfDates[$nextAmountDue]['amountDue'];
+      for ($nextAmountDue; $totalAmountDue > 0; $nextAmountDue++) {
+        $nextDueDate = '';
+        if (!empty($arrayOfDates[$nextAmountDue]['amountDue'])) {
+          $totalAmountDue = $totalAmountDue + $arrayOfDates[$nextAmountDue]['amountDue'];
+        }
+        if (!empty($arrayOfDates[$nextAmountDue]['dateText'])) {
+          $nextDueDate = $arrayOfDates[$nextAmountDue]['dateText'];
+        }
+        $totalAmountDue = $totalAmountDue - $amountPaid;
       }
-      if (!empty($arrayOfDates[$nextAmountDue]['dateText'])) {
-        $nextDueDate = $arrayOfDates[$nextAmountDue]['dateText'];
-      }
-    }
-    $totalAmountDue = $totalAmountDue - $amountPaid;
-    if ($totalAmountDue < 0) {
-      $totalAmountDue = 0;
     }
     return array(
       'lateFee'       => $lateFee,

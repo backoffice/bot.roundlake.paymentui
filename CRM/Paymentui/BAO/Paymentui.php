@@ -92,7 +92,6 @@ class CRM_Paymentui_BAO_Paymentui extends CRM_Event_DAO_Participant {
         $amountOwed = 0;
         $lateFee = 0;
         $currentDate = time();
-        $pastKeys = array();
         foreach ($arrayOfDates as $key => &$dates) {
           list($dateText, $amountDue) = explode(":", $dates);
           $dueDate = DateTime::createFromFormat('m/d/Y', $dateText);
@@ -107,18 +106,22 @@ class CRM_Paymentui_BAO_Paymentui extends CRM_Event_DAO_Participant {
             'diff' => $dueDate - $currentDate,
           );
           if ($dueDate <= $currentDate) {
-            unset($key);
-            $pastKeys[] = $key;
             // $totalAmountDue = $totalAmountDue + $amountDue;
             if ($amountOwed > $amountPaid) {
               $lateFee = $lateFee + $feeAmount;
             }
           }
         }
+        $lastKey = max(array_keys($arrayOfDates));
+        // All payments in the past
+        if ($arrayOfDates[$lastKey]['diff'] <= 0) {
+          $totalAmountDue = $balance;
+          $nextDueDate = $arrayOfDates[$lastKey]['dateText'] . "(ASAP)";
+        }
         // If amount owed = amount due  check if there is a next paymnt due and use that
         // If amount owed > amount due (late) show next payment due + amount owed
         foreach ($arrayOfDates as $key => $dates) {
-          if (($dates['amountOwed'] - $amountPaid) > 0) {
+          if (($dates['amountOwed'] - $amountPaid) > 0 && $dates['diff'] >= 0) {
             $totalAmountDue = $dates['amountOwed'] - $amountPaid;
             $nextDueDate = $dates['dateText'];
             break;

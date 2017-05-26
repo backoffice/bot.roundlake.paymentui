@@ -261,7 +261,7 @@ class CRM_Paymentui_BAO_Paymentui extends CRM_Event_DAO_Participant {
     $table = '<table class="partialPayment" border="1" cellpadding="4" cellspacing="1" style="border-collapse: collapse; text-align: left">
      <thead><tr>
        <th>Event Name</th>
-       <th>Contact Name</th>
+       <th>Student Name</th>
        <th>Cost of Program</th>
        <th>Paid to Date</th>
        <th>Total Balance Owed</th>
@@ -326,7 +326,7 @@ class CRM_Paymentui_BAO_Paymentui extends CRM_Event_DAO_Participant {
     $table = '<table class="partialPayment" cellspacing="5" cellpadding="5" style="border-collapse: collapse; text-align: left">
      <thead align="left"><tr>
        <th>Event Name</th>
-       <th>Contact Name</th>
+       <th>Student Name</th>
        <th>Payment Due</th>
        <th>Payment Amount</th>
     </tr></thead><tbody>

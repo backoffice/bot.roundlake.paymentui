@@ -111,7 +111,7 @@ class CRM_Paymentui_BAO_Paymentui extends CRM_Event_DAO_Participant {
         }
       }
       foreach ($arrayOfDates as $key => &$dates) {
-        if ($lateFee == 0 && $dates['amountOwed'] > $amountPaid) {
+        if ($lateFee == 0 && $dates['amountOwed'] >= $amountPaid) {
           $totalAmountDue = $dates['amountDue'];
           $nextDueDate = $dates['dateText'];
           break;

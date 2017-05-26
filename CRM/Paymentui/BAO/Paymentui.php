@@ -26,7 +26,7 @@ class CRM_Paymentui_BAO_Paymentui extends CRM_Event_DAO_Participant {
         $paymentDetails = CRM_Contribute_BAO_Contribution::getPaymentInfo($dao->id, 'event', FALSE, TRUE);
         //Get display names of the participants and additional participants, if any
         $displayNames   = self::getDisplayNames($dao->id, $dao->display_name);
-        $paymentSched   = self::getLateFees($dao->event_id, $paymentDetails['paid']);
+        $paymentSched   = self::getLateFees($dao->event_id, $paymentDetails['paid'], $paymentDetails['balance']);
         if ($paymentDetails['balance'] == 0) {
           $paymentSched['totalDue'] = 0;
         }
@@ -56,65 +56,73 @@ class CRM_Paymentui_BAO_Paymentui extends CRM_Event_DAO_Participant {
    * [getLateFees description]
    * @param  [type] $eventId [description]
    */
-  public static function getLateFees($eventId, $amountPaid) {
+  public static function getLateFees($eventId, $amountPaid, $balance) {
     $lateFee = 0;
-    try {
-      $lateFeeSchedule = civicrm_api3('CustomField', 'getSingle', array(
-        'sequential' => 1,
-        'return' => array("id"),
-        'name' => "event_late_fees",
-        'api.Event.getsingle' => array(
-          'id' => $eventId,
-        ),
-      ));
-    }
-    catch (CiviCRM_API3_Exception $e) {
-      $error = $e->getMessage();
-      CRM_Core_Error::debug_log_message(ts('API Error %1', array(
-        'domain' => 'bot.roundlake.paymentui',
-      )));
-    }
-
-    if (!empty($lateFeeSchedule['api.Event.getsingle']["custom_{$lateFeeSchedule['id']}"])) {
-      $feeAmount = 0;
-      $fees = self::getFeesFromSettings();
-      if (!empty($fees['late_fee'])) {
-        $feeAmount = $fees['late_fee'];
-      }
-      //parse schedule expects string that looks like: "04/15/2017:100\r\n04/20/2017:100\r\n04/25/2017:100"
-      $scheduleToParse = $lateFeeSchedule['api.Event.getsingle']["custom_{$lateFeeSchedule['id']}"];
-      $arrayOfDates = explode("\r\n", $scheduleToParse);
+    if ($balance == 0) {
       $totalAmountDue = 0;
-      $amountOwed = 0;
-      $lateFee = 0;
-      $currentDate = time();
-      $pastKeys = array();
-      foreach ($arrayOfDates as $key => &$dates) {
-        list($dateText, $amountDue) = explode(":", $dates);
-        $dueDate = DateTime::createFromFormat('m/d/Y', $dateText);
-        $dueDate = date_timestamp_get($dueDate);
-        $amountOwed = $amountOwed + $amountDue;
-        $dates = array(
-          'dateText' => $dateText,
-          'line' => $dates,
-          'unixDate' => $dueDate,
-          'amountDue' => $amountDue,
-          'amountOwed' => $amountOwed,
-          'diff' => $dueDate - $currentDate,
-        );
-        if ($dueDate < $currentDate) {
-          $pastKeys[] = $key;
-          $totalAmountDue = $totalAmountDue + $amountDue;
-          if ($totalAmountDue > $amountPaid) {
-            $lateFee = $lateFee + $feeAmount;
+      $nextDueDate = 'All Paid';
+    }
+    else {
+      try {
+        $lateFeeSchedule = civicrm_api3('CustomField', 'getSingle', array(
+          'sequential' => 1,
+          'return' => array("id"),
+          'name' => "event_late_fees",
+          'api.Event.getsingle' => array(
+            'id' => $eventId,
+          ),
+        ));
+      }
+      catch (CiviCRM_API3_Exception $e) {
+        $error = $e->getMessage();
+        CRM_Core_Error::debug_log_message(ts('API Error %1', array(
+          'domain' => 'bot.roundlake.paymentui',
+        )));
+      }
+      if (!empty($lateFeeSchedule['api.Event.getsingle']["custom_{$lateFeeSchedule['id']}"])) {
+        $feeAmount = 0;
+        $fees = self::getFeesFromSettings();
+        if (!empty($fees['late_fee'])) {
+          $feeAmount = $fees['late_fee'];
+        }
+        //parse schedule expects string that looks like: "04/15/2017:100\r\n04/20/2017:100\r\n04/25/2017:100"
+        $scheduleToParse = $lateFeeSchedule['api.Event.getsingle']["custom_{$lateFeeSchedule['id']}"];
+        $arrayOfDates = explode("\r\n", $scheduleToParse);
+        $totalAmountDue = 0;
+        $amountOwed = 0;
+        $lateFee = 0;
+        $currentDate = time();
+        $pastKeys = array();
+        foreach ($arrayOfDates as $key => &$dates) {
+          list($dateText, $amountDue) = explode(":", $dates);
+          $dueDate = DateTime::createFromFormat('m/d/Y', $dateText);
+          $dueDate = date_timestamp_get($dueDate);
+          $amountOwed = $amountOwed + $amountDue;
+          $dates = array(
+            'dateText' => $dateText,
+            'line' => $dates,
+            'unixDate' => $dueDate,
+            'amountDue' => $amountDue,
+            'amountOwed' => $amountOwed,
+            'diff' => $dueDate - $currentDate,
+          );
+          if ($dueDate <= $currentDate) {
+            unset($key);
+            $pastKeys[] = $key;
+            // $totalAmountDue = $totalAmountDue + $amountDue;
+            if ($amountOwed > $amountPaid) {
+              $lateFee = $lateFee + $feeAmount;
+            }
           }
         }
-      }
-      foreach ($arrayOfDates as $key => &$dates) {
-        if ($lateFee == 0 && $dates['amountOwed'] >= $amountPaid) {
-          $totalAmountDue = $dates['amountDue'];
-          $nextDueDate = $dates['dateText'];
-          break;
+        // If amount owed = amount due  check if there is a next paymnt due and use that
+        // If amount owed > amount due (late) show next payment due + amount owed
+        foreach ($arrayOfDates as $key => $dates) {
+          if (($dates['amountOwed'] - $amountPaid) > 0) {
+            $totalAmountDue = $dates['amountOwed'] - $amountPaid;
+            $nextDueDate = $dates['dateText'];
+            break;
+          }
         }
       }
     }

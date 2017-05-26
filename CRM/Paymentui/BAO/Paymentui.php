@@ -118,13 +118,14 @@ class CRM_Paymentui_BAO_Paymentui extends CRM_Event_DAO_Participant {
           $totalAmountDue = $balance;
           $nextDueDate = $arrayOfDates[$lastKey]['dateText'] . "(ASAP)";
         }
-        // If amount owed = amount due  check if there is a next paymnt due and use that
-        // If amount owed > amount due (late) show next payment due + amount owed
-        foreach ($arrayOfDates as $key => $dates) {
-          if (($dates['amountOwed'] - $amountPaid) > 0 && $dates['diff'] >= 0) {
-            $totalAmountDue = $dates['amountOwed'] - $amountPaid;
-            $nextDueDate = $dates['dateText'];
-            break;
+        else {
+          foreach ($arrayOfDates as $key => $dates) {
+            // find first date where the person would owe in the future
+            if (($dates['amountOwed'] - $amountPaid) > 0) {
+              $totalAmountDue = $dates['amountOwed'] - $amountPaid;
+              $nextDueDate = $dates['dateText'];
+              break;
+            }
           }
         }
       }

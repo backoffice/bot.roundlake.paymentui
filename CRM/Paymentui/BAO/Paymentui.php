@@ -165,6 +165,7 @@ class CRM_Paymentui_BAO_Paymentui extends CRM_Event_DAO_Participant {
         'sequential' => 1,
         'relationship_type_id' => 1,
         'contact_id_b' => $contactID,
+        'contact_id_a.is_deleted' => 0,
       ));
     }
     catch (CiviCRM_API3_Exception $e) {

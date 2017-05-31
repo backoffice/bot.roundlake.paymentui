@@ -26,6 +26,11 @@ class CRM_Paymentui_Form_FeesSettings extends CRM_Core_Form {
       // field label
       'Late Fee'
     );
+    $this->addEntityRef('payment_processor', ts('Select Payment Processor'), array(
+      'entity' => 'PaymentProcessor',
+      'placeholder' => ts('- Select Payment Processor -'),
+      'select' => array('minimumInputLength' => 0),
+    ));
     $this->addButtons(array(
       array(
         'type' => 'submit',
@@ -41,7 +46,7 @@ class CRM_Paymentui_Form_FeesSettings extends CRM_Core_Form {
     try {
       $existingSetting = civicrm_api3('Setting', 'get', array(
         'sequential' => 1,
-        'return' => array("paymentui_processingfee", "paymentui_latefee"),
+        'return' => array("paymentui_processingfee", "paymentui_latefee", "paymentui_processor"),
       ));
     }
     catch (CiviCRM_API3_Exception $e) {
@@ -54,6 +59,9 @@ class CRM_Paymentui_Form_FeesSettings extends CRM_Core_Form {
     if (!empty($existingSetting['values'][0]['paymentui_latefee'])) {
       $defaults['late_fee'] = $existingSetting['values'][0]['paymentui_latefee'];
     }
+    if (!empty($existingSetting['values'][0]['paymentui_processor'])) {
+      $defaults['payment_processor'] = $existingSetting['values'][0]['paymentui_processor'];
+    }
     $this->setDefaults($defaults);
     parent::buildQuickForm();
   }
@@ -64,8 +72,11 @@ class CRM_Paymentui_Form_FeesSettings extends CRM_Core_Form {
     if (!empty($values['processing_fee'])) {
       $params['paymentui_processingfee'] = $values['processing_fee'];
     }
-    if (!empty($values['processing_fee'])) {
+    if (!empty($values['late_fee'])) {
       $params['paymentui_latefee'] = $values['late_fee'];
+    }
+    if (!empty($values['payment_processor'])) {
+      $params['paymentui_processor'] = $values['payment_processor'];
     }
     if (!empty($params)) {
       try {

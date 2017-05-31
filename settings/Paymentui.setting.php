@@ -30,4 +30,16 @@ return array(
     'description' => 'Late Fee to be applied to payments made against late Partially Paid Event Registration',
     'help_text' => 'The payment schedule is held in the Event Late Fees custom field',
   ),
+  'paymentui_processor' => array(
+    'group_name' => 'Payment Processor to use for Partial Payment Page',
+    'group' => 'paymentui',
+    'name' => 'paymentui_processor',
+    'type' => 'Integer',
+    'default' => NULL,
+    'add' => '4.6',
+    'is_domain' => 1,
+    'is_contact' => 0,
+    'description' => 'Payment Processor to use for Partial Payment page',
+    'help_text' => 'Select One',
+  ),
 );

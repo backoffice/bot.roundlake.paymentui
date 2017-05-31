@@ -158,12 +158,26 @@ class CRM_Paymentui_Form_Paymentui extends CRM_Core_Form {
     $this->_params = $this->controller->exportValues($this->_name);
     $totalAmount = 0;
     $config = CRM_Core_Config::singleton();
-
+    $lateFees = 0;
+    $fees = CRM_Paymentui_BAO_Paymentui::getFeesFromSettings();
+    $processingFee = 1;
+    $totalProcessingFee = 0;
+    if (!empty($fees['processing_fee'])) {
+      $processingFee = $fees['processing_fee'] / 100;
+    }
     //Calculate total amount paid and individual amount for each contribution
     foreach ($this->_params['payment'] as $pid => $pVal) {
+      // add together partial pay amounts
       $totalAmount += $pVal;
+      //save partial pay amount to particioant info array
       $this->_participantInfo[$pid]['partial_payment_pay'] = $pVal;
+      // add together late fees
+      $lateFees += $this->_participantInfo[$pid]['latefees'];
+      //calculate processing fee
+      $this->_participantInfo[$pid]['processingfees'] = round($pVal * $processingFee, 2);
+      $totalProcessingFee += $this->_participantInfo[$pid]['processingfees'];
     }
+    $totalAmount = $totalAmount + $lateFees + $totalProcessingFee;
     //Building params for CC processing
     $this->_params["state_province-{$this->_bltID}"] = $this->_params["billing_state_province-{$this->_bltID}"] = CRM_Core_PseudoConstant::stateProvinceAbbreviation($this->_params["billing_state_province_id-{$this->_bltID}"]);
 

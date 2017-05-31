@@ -41,8 +41,8 @@ class CRM_Paymentui_Form_Paymentui extends CRM_Core_Form {
         t('API Error: %1', array(1 => $error, 'domain' => 'bot.roundlake.paymentui'))
       );
     }
-    if (!empty($paymentProcessorSetting['values']['paymentui_processor'])) {
-      $processorToUse = $paymentProcessorSetting['values']['paymentui_processor'];
+    if (!empty($paymentProcessorSetting['values'][0]['paymentui_processor'])) {
+      $processorToUse = $paymentProcessorSetting['values'][0]['paymentui_processor'];
     }
     CRM_Core_Payment_Form::buildPaymentForm($this, $processors[$processorToUse], 1, FALSE);
     $this->_paymentProcessor = CRM_Financial_BAO_PaymentProcessor::getPayment($processorToUse, 'live');

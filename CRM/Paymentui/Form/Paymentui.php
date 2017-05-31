@@ -27,9 +27,25 @@ class CRM_Paymentui_Form_Paymentui extends CRM_Core_Form {
     $this->assign('bltID', $this->_bltID);
     $this->_fields = array();
     $processors = CRM_Financial_BAO_PaymentProcessor::getPaymentProcessors($capabilities = array('LiveMode'), $ids = FALSE);
-    $defaultProcessor = CRM_Financial_BAO_PaymentProcessor::getDefault();
-    CRM_Core_Payment_Form::buildPaymentForm($this, $processors[$defaultProcessor->id], 1, FALSE);
-    $this->_paymentProcessor = CRM_Financial_BAO_PaymentProcessor::getPayment($defaultProcessor->id, 'live');
+    $processorToUse = CRM_Financial_BAO_PaymentProcessor::getDefault()->id;
+    //get payment processor from setting
+    try {
+      $paymentProcessorSetting = civicrm_api3('Setting', 'get', array(
+        'sequential' => 1,
+        'return' => array("paymentui_processor"),
+      ));
+    }
+    catch (CiviCRM_API3_Exception $e) {
+      $error = $e->getMessage();
+      CRM_Core_Error::debug_log_message(
+        t('API Error: %1', array(1 => $error, 'domain' => 'bot.roundlake.paymentui'))
+      );
+    }
+    if (!empty($paymentProcessorSetting['values']['paymentui_processor'])) {
+      $processorToUse = $paymentProcessorSetting['values']['paymentui_processor'];
+    }
+    CRM_Core_Payment_Form::buildPaymentForm($this, $processors[$processorToUse], 1, FALSE);
+    $this->_paymentProcessor = CRM_Financial_BAO_PaymentProcessor::getPayment($processorToUse, 'live');
   }
 
   /**

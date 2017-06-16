@@ -51,7 +51,7 @@ class CRM_Paymentui_Form_FeesSettings extends CRM_Core_Form {
     }
     catch (CiviCRM_API3_Exception $e) {
       $error = $e->getMessage();
-      CRM_Core_Error::debug_log_message(t('API Error: %1', array(1 => $error, 'domain' => 'bot.roundlake.paymentui')));
+      CRM_Core_Error::debug_log_message(ts('API Error: %1', array(1 => $error, 'domain' => 'bot.roundlake.paymentui')));
     }
     if (!empty($existingSetting['values'][0]['paymentui_processingfee'])) {
       $defaults['processing_fee'] = $existingSetting['values'][0]['paymentui_processingfee'];
@@ -85,7 +85,7 @@ class CRM_Paymentui_Form_FeesSettings extends CRM_Core_Form {
       catch (CiviCRM_API3_Exception $e) {
         $error = $e->getMessage();
         CRM_Core_Error::debug_log_message(
-          t('API Error: %1', array(1 => $error, 'domain' => 'bot.roundlake.paymentui'))
+          ts('API Error: %1', array(1 => $error, 'domain' => 'bot.roundlake.paymentui'))
         );
       }
       CRM_Core_Session::setStatus(ts('The Processing fee is now set to "%1"', array(

@@ -38,7 +38,7 @@ class CRM_Paymentui_Form_Paymentui extends CRM_Core_Form {
     catch (CiviCRM_API3_Exception $e) {
       $error = $e->getMessage();
       CRM_Core_Error::debug_log_message(
-        t('API Error: %1', array(1 => $error, 'domain' => 'bot.roundlake.paymentui'))
+        ts('API Error: %1', array(1 => $error, 'domain' => 'bot.roundlake.paymentui'))
       );
     }
     if (!empty($paymentProcessorSetting['values'][0]['paymentui_processor'])) {

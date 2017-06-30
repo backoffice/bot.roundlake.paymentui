@@ -12,13 +12,19 @@ class CRM_Paymentui_BAO_Paymentui extends CRM_Event_DAO_Participant {
     $relContactIDs       = implode(',', $relatedContactIDs);
 
     //Get participant info for the primary and related contacts
-    $sql = "SELECT p.id, p.contact_id, e.title, c.display_name, p.event_id, pp.contribution_id FROM civicrm_participant p
-      INNER JOIN civicrm_contact c ON ( p.contact_id =  c.id )
-			INNER JOIN civicrm_event e ON ( p.event_id = e.id )
-			INNER JOIN civicrm_participant_payment pp ON ( p.id = pp.participant_id )
-			WHERE
-			p.contact_id IN ($relContactIDs)
-			AND (p.status_id = 15 OR p.status_id = 5) AND p.is_test = 0";
+    $sql = <<<HERESQL
+SELECT p.id, p.contact_id, e.title, c.display_name, p.event_id, pp.contribution_id
+FROM civicrm_participant p
+  INNER JOIN civicrm_contact c
+    ON ( p.contact_id =  c.id )
+  INNER JOIN civicrm_event e
+    ON ( p.event_id = e.id )
+  INNER JOIN civicrm_participant_payment pp
+    ON ( p.id = pp.participant_id )
+WHERE p.contact_id IN ($relContactIDs)
+  AND (p.status_id = 15 OR p.status_id = 5)
+  AND p.is_test = 0
+HERESQL;
     $dao = CRM_Core_DAO::executeQuery($sql);
     if ($dao->N) {
       while ($dao->fetch()) {
@@ -57,10 +63,12 @@ class CRM_Paymentui_BAO_Paymentui extends CRM_Event_DAO_Participant {
    * @param  [type] $eventId [description]
    */
   public static function getLateFees($eventId, $amountPaid, $balance) {
-    $lateFee = 0;
+    $return = array(
+      'lateFee' => 0,
+      'totalDue' => $balance,
+    );
     if ($balance == 0) {
-      $totalAmountDue = 0;
-      $nextDueDate = 'All Paid';
+      $return['nextDueDate'] = ts('All Paid', array('domain' => 'bot.roundlake.paymentui'));
     }
     else {
       try {
@@ -80,18 +88,20 @@ class CRM_Paymentui_BAO_Paymentui extends CRM_Event_DAO_Participant {
         )));
       }
       if (!empty($lateFeeSchedule['api.Event.getsingle']["custom_{$lateFeeSchedule['id']}"])) {
-        $feeAmount = 0;
         $fees = self::getFeesFromSettings();
-        if (!empty($fees['late_fee'])) {
-          $feeAmount = $fees['late_fee'];
-        }
-        //parse schedule expects string that looks like: "04/15/2017:100\r\n04/20/2017:100\r\n04/25/2017:100"
+        $feeAmount = CRM_Utils_Array::value('late_fee', $fees, 0);
+        // Parse schedule expects string that looks like:
+        //     04/15/2017:100
+        //     04/20/2017:100
+        //     04/25/2017:100
         $scheduleToParse = $lateFeeSchedule['api.Event.getsingle']["custom_{$lateFeeSchedule['id']}"];
-        $arrayOfDates = explode("\r\n", $scheduleToParse);
-        $totalAmountDue = 0;
+        // Use regex to split on line breaks whether they're Windows (`\r\n`),
+        // Mac (`\r`), or Unix (`\n`).
+        $arrayOfDates = preg_split('/\r\n|\r|\n/', $scheduleToParse);
+        $return['totalDue'] = 0;
         $amountOwed = 0;
-        $lateFee = 0;
         $currentDate = time();
+        reset($arrayOfDates);
         foreach ($arrayOfDates as $key => &$dates) {
           list($dateText, $amountDue) = explode(":", $dates);
           $dueDate = DateTime::createFromFormat('m/d/Y', $dateText);
@@ -105,36 +115,31 @@ class CRM_Paymentui_BAO_Paymentui extends CRM_Event_DAO_Participant {
             'amountOwed' => $amountOwed,
             'diff' => $dueDate - $currentDate,
           );
-          if ($dueDate <= $currentDate) {
-            // $totalAmountDue = $totalAmountDue + $amountDue;
-            if ($amountOwed > $amountPaid) {
-              $lateFee = $lateFee + $feeAmount;
-            }
+
+          if ($amountPaid >= $amountOwed)  {
+            $dates['status'] = 'paid';
+          }
+          elseif ($dueDate >= $currentDate) {
+            $dates['status'] = 'current';
+            $return['nextDueDate'] = $dateText;
+            $return['totalDue'] = $amountOwed - $amountPaid;
+            break;
+          }
+          else {
+            // Add to late fee for each due date in the past
+            $return['lateFee'] += $feeAmount;
           }
         }
-        $lastKey = max(array_keys($arrayOfDates));
         // All payments in the past
-        if ($arrayOfDates[$lastKey]['diff'] <= 0) {
-          $totalAmountDue = $balance;
-          $nextDueDate = $arrayOfDates[$lastKey]['dateText'] . "(ASAP)";
-        }
-        else {
-          foreach ($arrayOfDates as $key => $dates) {
-            // find first date where the person would owe in the future
-            if (($dates['amountOwed'] - $amountPaid) > 0) {
-              $totalAmountDue = $dates['amountOwed'] - $amountPaid;
-              $nextDueDate = $dates['dateText'];
-              break;
-            }
-          }
+        if (empty($return['nextDueDate'])) {
+          $return['nextDueDate'] = ts('%1 (ASAP)', array(
+            'domain' => 'bot.roundlake.paymentui',
+            1 => $dateText,
+          ));
         }
       }
     }
-    return array(
-      'lateFee'       => $lateFee,
-      'totalDue'      => $totalAmountDue,
-      'nextDueDate'   => $nextDueDate,
-    );
+    return $return;
   }
 
   /**

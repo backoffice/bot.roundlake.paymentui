@@ -273,7 +273,7 @@ HERESQL;
     ';
     if (!$receipt) {
       $table .= '
-        <th>Next Payment Due Date</th>
+        <th>Late Fee Applies On</th>
         <th>Late Fees</th>
         <th>Next Payment Due Amount</th>
       </tr></thead><tbody>';

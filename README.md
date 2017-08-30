@@ -9,12 +9,11 @@ Differences between this extension and Backoffice Originals:
 
 + Uses an api call to get related contacts and only gets parent/child relationships
 + Uses id 15 instead of 14 for partial payments
-+ Uses the default payment processor
-+ Creates a custom field to hold late fees and adds late fees according to the parsed late fee schedule
++ Uses the payment processor as set on the [settings page for the extension](https://ymcaga.org/administrator/?option=com_civicrm&task=civicrm/paymentui/feessettings)
++ Adds late fees based on the "Event Late Fees" (a custom field on the event) and the Late Fee amount set on the [settings page for the extension](https://ymcaga.org/administrator/?option=com_civicrm&task=civicrm/paymentui/feessettings)
 + Creates a token of the table of partially paid event registrations for the contact and anyone they have a child of relationship to
-+ Adds a credit card processing fee of 2% to all payments
++ Adds a credit card processing fee based on the percentage amount set on the [settings page for the extension](https://ymcaga.org/administrator/?option=com_civicrm&task=civicrm/paymentui/feessettings)
 + Creates a settings page: civicrm/paymentui/feessettings where one can set the processing fee and the late fee
-Note to create a partially paid event registration: Register user on the backend and edit the amount under payment Information to be less than the Total Fees
 
 Added Features:
 
@@ -35,14 +34,13 @@ Select Payment Processor: Payment Processor to use on add payment page
 
 ### On the event page:
 
-For each event that one would like to set up a payment schedule for (have people be charged late fees if they do not make their partial payments on time): One must add a payment schedule formatted like this to the "Event Late Fees" custom field on the event. For an event where the registration fee was $200 a payment schedule may look like this one below. Where the date is the Date due and the number is the amount due at that time.  on 06/22/2017 with this payment schedule the event registrant would be expected to have paid 100 or owe a late fee. 
+For each event that one would like to set up a payment schedule for (have people be charged late fees if they do not make their partial payments on time): One must add a payment schedule formatted like this to the "Event Late Fees" custom field on the event. For an event where the registration fee was $200 a payment schedule may look like this one below. Where the date is the Date due and the number is the amount due at that time.  on 06/22/2017 with this payment schedule the event registrant would be expected to have paid 100 or owe a late fee.
 
 ```
 06/01/2017:50
 06/21/2017:50
 07/21/2017:50
 08/21/2017:50
-
 ```
 
 ## Create a Partially Paid Event registration

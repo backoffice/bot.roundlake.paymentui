@@ -1,7 +1,7 @@
 This Extension is a combination of:
 
 + https://github.com/backoffice/BOT-Partial-Payment-Extension
-+ https://github.com/aghstrategies/bot.roundlake.paymentui
++ https://github.com/backoffice/bot.roundlake.paymentui
 
 modified to work with civicrm 4.7
 
@@ -22,3 +22,11 @@ Added Features:
 + Custom Field for late fee schedule "Event Late Fees"
 + Setting page for late fee and processing fee amounts
 + Sets default amount paid input text to be the amount owed if late plus the amount for the next payment
+
+## Create a Partially Paid Event registration
+
+This must be done on the backend. Go to a contact, add an event registration with a status of "partially paid" and enter into the record payment amount an amount less than the total. Visit: https://ymcaga.org/index.php?option=com_civicrm&task=civicrm/addpayment logged in on the front end as the contact you created a partially paid event registration for. you should see the cost being the payment option amount. Paid to Date being the amount entered into the record payment box. $$ remaining being the difference.
+
+See Screenshots regarding this process in img folder.
+
+For additional tests regarding late fees and processing fees see tests file.

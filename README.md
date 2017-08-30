@@ -14,12 +14,7 @@ Differences between this extension and Backoffice Originals:
 + Creates a token of the table of partially paid event registrations for the contact and anyone they have a child of relationship to
 + Adds a credit card processing fee based on the percentage amount set on the [settings page for the extension](https://ymcaga.org/administrator/?option=com_civicrm&task=civicrm/paymentui/feessettings)
 + Creates a settings page: civicrm/paymentui/feessettings where one can set the processing fee and the late fee
-
-Added Features:
-
-+ Token: 'Table of Partial Payment Information' that generates the table the user sees when on the payment page as a token to be used in emails.
-+ Custom Field for late fee schedule "Event Late Fees"
-+ Setting page for late fee and processing fee amounts
++ Tokens: generates two tokens: {partialPayment.simpleTable} and {partialPayment.table} that generates the tables the user sees when on the payment page as tokens to be used in emails and for invoices.
 + Sets default amount paid input text to be the amount owed if late plus the amount for the next payment
 
 ## Settings for this extension:

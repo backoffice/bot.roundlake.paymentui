@@ -42,6 +42,8 @@ For each event that one would like to set up a payment schedule for (have people
 
 This must be done on the backend. Go to a contact, add an event registration with a participant status of "partially paid" and enter into the record payment amount an amount less than the total. Visit: https://ymcaga.org/index.php?option=com_civicrm&task=civicrm/addpayment logged in on the front end as the contact you created a partially paid event registration for. you should see the cost being the payment option amount. Paid to Date being the amount entered into the record payment box. $$ remaining being the difference.
 
+In Civi 4.7.23 and above, amount entered when partially paid registration is made cannot be $0.00 without the price of the event itself also being saved as $0.00. No future payments will be allowed if this is done. Enter an amount greater than $0.00 to see the remaining balance owed and enable future payments.
+
 See Screenshots regarding this process in img folder.
 
 For additional tests regarding late fees and processing fees see tests file.

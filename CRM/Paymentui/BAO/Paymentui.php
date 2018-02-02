@@ -132,6 +132,9 @@ HERESQL;
         }
         // All payments in the past
         if (empty($return['nextDueDate'])) {
+          if (($amountOwed - $amountPaid) > 0) {
+            $return['totalDue'] = $amountOwed - $amountPaid;
+          }
           $return['nextDueDate'] = ts('%1 (ASAP)', array(
             'domain' => 'bot.roundlake.paymentui',
             1 => $dateText,

@@ -213,9 +213,18 @@ class CRM_Paymentui_Form_Paymentui extends CRM_Core_Form {
     // $payment = CRM_Core_Payment::singleton($this->_mode, $this->_paymentProcessor, $this);
     $payment = Civi\Payment\System::singleton()->getByProcessor($this->_paymentProcessor);
 
-    $result  = $payment->doDirectPayment($paymentParams);
+    $result = $payment->doDirectPayment($paymentParams);
+    if (!empty($result->_errors)) {
+      foreach ($result->_errors as $key => $errorDetails) {
+        if (!empty($errorDetails['message'])) {
+          CRM_Core_Session::setStatus(ts($errorDetails['message']), '', 'no-popup');
+        }
+      }
+    }
+    else {
+     print_r($result); die();
+    }
     $CCFinancialTrxn = CRM_Paymentui_BAO_Paymentui::createFinancialTrxn($paymentParams);
-
     $partialPaymentInfo = $this->_participantInfo;
     //Process all the partial payments and update the records
     $paymentProcessedInfo = paymentui_civicrm_process_partial_payments($paymentParams, $this->_participantInfo);

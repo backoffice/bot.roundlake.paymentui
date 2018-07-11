@@ -222,23 +222,25 @@ class CRM_Paymentui_Form_Paymentui extends CRM_Core_Form {
       }
     }
     else {
-     print_r($result); die();
+      //TODO figure out what success message looks like and only do this if you get it.
+      //TODO TEST successful payment and failed payment
+      // print_r($result); die();
+      $CCFinancialTrxn = CRM_Paymentui_BAO_Paymentui::createFinancialTrxn($paymentParams);
+      $partialPaymentInfo = $this->_participantInfo;
+      //Process all the partial payments and update the records
+      $paymentProcessedInfo = paymentui_civicrm_process_partial_payments($paymentParams, $this->_participantInfo);
+      // example: https://github.com/civicrm/civicrm-core/blob/648631cd94799e87fe2347487d465b1a7256aa57/tests/phpunit/CRM/Core/Config/MailerTest.php#L75
+      parent::postProcess();
+
+      //Define status message
+      $statusMsg = ts('The payment(s) have been processed successfully.');
+      CRM_Core_Session::setStatus($statusMsg, ts('Saved'), 'success');
+
+      //Redirect to the same URL
+      $url     = CRM_Utils_System::url('civicrm/addpayment', "reset=1");
+      $session = CRM_Core_Session::singleton();
+      CRM_Utils_System::redirect($url);
     }
-    $CCFinancialTrxn = CRM_Paymentui_BAO_Paymentui::createFinancialTrxn($paymentParams);
-    $partialPaymentInfo = $this->_participantInfo;
-    //Process all the partial payments and update the records
-    $paymentProcessedInfo = paymentui_civicrm_process_partial_payments($paymentParams, $this->_participantInfo);
-    // example: https://github.com/civicrm/civicrm-core/blob/648631cd94799e87fe2347487d465b1a7256aa57/tests/phpunit/CRM/Core/Config/MailerTest.php#L75
-    parent::postProcess();
-
-    //Define status message
-    $statusMsg = ts('The payment(s) have been processed successfully.');
-    CRM_Core_Session::setStatus($statusMsg, ts('Saved'), 'success');
-
-    //Redirect to the same URL
-    $url     = CRM_Utils_System::url('civicrm/addpayment', "reset=1");
-    $session = CRM_Core_Session::singleton();
-    CRM_Utils_System::redirect($url);
   }
 
   /**

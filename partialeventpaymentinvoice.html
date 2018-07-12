@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns = "http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv = "Content-Type" content="text/html; charset=UTF-8" />
+      <title></title>
+  </head>
+  <body style='height:1056px;position:relative;'>
+        <table style = "margin-top:2px;padding-left:7px;padding-bottom:15px;">
+          <tr>
+            <td><img src ="https://ymcaga.org/media/civicrm/persist/contribute/images/Georgia-Center-stacked-logo-NO-Y.JPG" height = "57px" width = "150px"></td>
+            <td valign="top" style="padding-bottom:15px;"><font size = "1" align = "left" >
+              <div style="font-family: Calibri;">
+                <font size = "2" style="Calibri"><strong>Georgia Center for Civic Engagement</strong></font><br />
+                <font size="1" style="Calibri">Post Office Box 3789 • Cartersville, Georgia 30120 <br />Phone: 770-455-9622           Email: studentaccounts@georgiacivics.org</font>
+              </div>
+            </td>
+          </tr>
+        </table>
+
+        <table style = "padding-bottom:30px; padding-right:19px;font-family: Arial, Verdana, sans-serif;" width = "500" height = "100" cellpadding = "2" cellspacing = "1">
+          <tr style="padding-bottom:60px;padding-top:15px;">
+            <td style = "padding-left:15px;" ><b><font size = "4" align = "center" valign="top">Account Statement</font></b></td>
+            <td colspan = "4"></td>
+          </tr>
+          <tr>
+            <td style = "padding-left:15px;" valign="top">
+              <font size = "2" align = "left">
+                <div style="width:17em;word-wrap:break-word;padding-top:30px;">
+              {contact.display_name} <br />
+              {contact.street_address}
+              {contact.supplemental_address_1}
+              {contact.supplemental_address_2}<br/>
+              {contact.city},  {contact.state_province}  {contact.postal_code}
+              </div>
+              </font>
+            </td>
+            <td colspan = "2"></td>
+            <td style = "padding-left:15px;padding-top:0px;font-size:10px;"  valign="top" align="left"><font size = "1" align = "right">
+               <b>Statement Date:</b><br />
+               {partialPayment.today_format_full}<br /><p></p>
+               <b>Reference:</b><br />
+               Partial Event Payment Invoice
+             </font>
+           </td>
+          </tr>
+        </table>
+
+
+        <font size = "1" align = "left" >
+        {partialPayment.table}
+        </font>
+
+        <div style='height:330px;position:absolute; bottom:0px;'>
+          <div style="border:1px solid black;padding:5px;font-size:10px;"><p>Please refer to your payment schedule for due dates. <br>
+            All checks should be made payable to the Georgia Center for Civic Engagement, or GCCE.</p>
+            <p>If you have questions about your account, please call us at 770-455-9622, or you may email us at studentaccounts@georgiacivics.org.</p>
+          </div>
+        <table style = "margin-top:5px;padding-right:45px;">
+          <tr>
+            <td><img src = "https://ymcaga.org/media/civicrm/persist/contribute/images/cut_line.png" height = "15" width = "630"></td>
+          </tr>
+        </table>
+        <table style = "margin-top:6px;padding-right:20px;font-family: Arial, Verdana, sans-serif" width = "480" border = "0"cellpadding = "-5" cellspacing="19" id = "desc">
+          <tr><td><b><font size = "4" align = "right">PAYMENT COUPON</font></b></td></tr>
+          <tr>
+            <td width="30%" valign="top" style="font-size:10px;">To: </b>      <div style="width:17em;word-wrap:break-word;line-height:1.25">
+          <strong>Georgia Center for Civic Engagement</strong> <br />
+          Post Office Box 3789 <br />
+          Cartersville, Georgia 30120 <br />
+          770-455-9622 <br />
+          studentaccounts@georgiacivics.org </div>
+                  </td>
+                  <td width="70%" style="font-size:10px;">
+                    {partialPayment.simpleTable}
+                  </td>
+          </tr>
+          </table>
+        </div>
+
+  </body>
+</html>

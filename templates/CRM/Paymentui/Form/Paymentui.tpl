@@ -1,13 +1,13 @@
 {* HEADER *}
 <div class="form-item">
 	<fieldset>
-	<legend>{ts}{$displayName}{/ts}</legend> 
-		<table class=" form-layout">		
+	<legend>{ts}{$displayName}{/ts}</legend>
+		<table class=" form-layout">
 			<tr>
 				<td colspan="2">
-					<table class="form-layout">   
-						<thead class="sticky"> 
-							{foreach from=$columnHeaders item=header}							  
+					<table class="form-layout partialPaymentInfo">
+						<thead class="sticky">
+							{foreach from=$columnHeaders item=header}
 								<th scope="col"><strong>{$header}</strong></th>
 							{/foreach}
 						</thead>
@@ -17,25 +17,39 @@
 								<td class="">{$row.contact_name}</td>
 								<td class="">{$row.total_amount|crmMoney}</td>
 								<td class="">{$row.paid|crmMoney}</td>
-								<td class="">{$row.balance|crmMoney}</td>				
+								<td class="balance">{$row.balance|crmMoney}</td>
 
-								<td class="">{$form.payment[$row.pid].html|crmMoney}</td>
-								
+								<td class="payment">{$form.payment[$row.pid].html|crmMoney}</td>
+
 							</tr>
 						{/foreach}
 						{if $contactId}
-						<thead class="sticky">  
+						<tr class="sticky">
+							<td colspan = 5 scope="col"><strong>Processing Fee</strong></th>
+							<td class="font-size12pt "><span>$ </span><span name='creditCardFees' id ='creditCardFees'>0</span></td>
+						</tr>
+						{if $latefees}
+						<tr class="sticky">
+							<td colspan = 5 scope="col"><strong>Late Fees</strong></th>
+							<td class="font-size12pt "><span>$ </span><span name='latefees' id ='latefees'>{$latefees}</span></td>
+						</tr>
+						{/if}
+						<thead class="sticky">
 									<td colspan = 5 scope="col"><strong>Total</strong></th>
-									<td class="font-size12pt "><span>$ </span><span name='total' id ='total'>0</span></td>                   
+									<td class="font-size12pt "><span>$ </span><span name='total' id ='total'>0</span></td>
 						</thead>
 						{/if}
 					</table>
 				</td>
-			</tr>	
-		</table>						
-	</fieldset>							
+			</tr>
+		</table>
+	</fieldset>
 </div>
-
+<div class="crm-section">
+	<div class="label">{$form.email.label}</div>
+	<div class="content">{$form.email.html}</div>
+	<div class="clear"></div>
+</div>
 {* FIELD EXAMPLE: OPTION 1 (AUTOMATIC LAYOUT) *}
 {include file="CRM/Core/BillingBlock.tpl" context="front-end"}
 {if $form.payment_processor.label}
@@ -75,21 +89,3 @@
 <div class="crm-submit-buttons">
 {include file="CRM/common/formButtons.tpl" location="bottom"}
 </div>
-{literal}
-
-<script type="text/javascript">
-function calculateTotal() {
-	var total = 0.00;
-	cj.each(cj( "input[name^='payment']" ), function() { 
-		var amt = cj(this).val();
-		if ( cj.isNumeric(amt) ) {
-			total = parseFloat(total)+parseFloat(amt);
-		}
-	});
-	total = Math.round(total*100, 2)/100;
-    total.toFixed(2);
-	
-	document.getElementById('total').innerHTML = total;		
-}
-</script>
-{/literal}

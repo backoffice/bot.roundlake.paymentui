@@ -221,10 +221,7 @@ class CRM_Paymentui_Form_Paymentui extends CRM_Core_Form {
         }
       }
     }
-    else {
-      //TODO figure out what success message looks like and only do this if you get it.
-      //TODO TEST successful payment and failed payment
-      // print_r($result); die();
+    elseif (!empty($result['amount'])) {
       $CCFinancialTrxn = CRM_Paymentui_BAO_Paymentui::createFinancialTrxn($paymentParams);
       $partialPaymentInfo = $this->_participantInfo;
       //Process all the partial payments and update the records

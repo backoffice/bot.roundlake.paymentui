@@ -94,7 +94,7 @@ class CRM_Paymentui_BAO_Paymentui extends CRM_Event_DAO_Participant {
 /** 
  ** Creates a financial trxn record for the CC transaction of the total amount
 **/    
-  function createFinancialTrxn( $payment ) {
+  public static function createFinancialTrxn( $payment ) {
 	//Set Payment processor to Auth CC
 	//To be changed for switching to live processor
 	$payment_processor_id = CRM_Core_DAO::getFieldValue( 'CRM_Financial_DAO_PaymentProcessor', 'Credit Card', 'id', 'name');
@@ -137,6 +137,7 @@ class CRM_Paymentui_BAO_Paymentui extends CRM_Event_DAO_Participant {
 	$entityTrxn = new CRM_Financial_DAO_EntityFinancialTrxn();
 	$entityTrxn->copyValues($entityFinancialTrxnParams);
 	$entityTrxn->save();
+	return $entityTrxn;
   }
 
 }

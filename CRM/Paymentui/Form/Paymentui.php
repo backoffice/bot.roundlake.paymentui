@@ -108,7 +108,9 @@ public $_params;
     // export form elements
     $this->assign('elementNames', $this->getRenderableElementNames());
     parent::buildQuickForm();
-	$this->addFormRule(array('CRM_Paymentui_Form_Paymentui', 'formRule'), $this);
+	//$this->addFormRule(array('CRM_Paymentui_Form_Paymentui', 'formRule'), $this);
+    $this->addFormRule(['CRM_Paymentui_Form_Paymentui', 'formRule'], $this);
+
   }
 
    /**
@@ -124,7 +126,7 @@ public $_params;
    * @access public
    * @static
    */
-  function formRule($fields, $files, $self) {
+public static  function formRule($fields, $files, $self) {
 	$errors = array();
 	//Validate the amount: should not be more than balance and should be numeric
 	foreach ( $fields['payment'] as $pid => $amount ) {
@@ -176,7 +178,7 @@ public $_params;
 	
 	//Calculate total amount paid and individual amount for each contribution
 	foreach ( $this->_params['payment'] as $pid => $pVal ) {
-		$totalAmount += $pVal;
+		$totalAmount += number_format((float)$pVal, 2, '.', '');
 		$this->_participantInfo[$pid]['partial_payment_pay'] = $pVal;
 	}
 	//Building params for CC processing
